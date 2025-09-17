@@ -18,10 +18,12 @@ namespace OpenGL {
 		static bool RenderRedChannel;
 		static bool RenderGreenChannel;
 		static bool RenderBlueChannel;
+		static float Intensity = 1.0f; // Default to 100%
 
 	private: System::Windows::Forms::CheckBox^ checkBoxRedChannel;
 	private: System::Windows::Forms::CheckBox^ checkBoxGreenChannel;
 	private: System::Windows::Forms::CheckBox^ checkBoxBlueChannel;
+	private: System::Windows::Forms::TrackBar^ trackBar1;
 		   
 	public:
 	ToolWindow(void)
@@ -43,12 +45,7 @@ namespace OpenGL {
 				delete components;
 			}
 		}
-
-	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		System::ComponentModel::Container ^components;
+	private: System::ComponentModel::IContainer^ components;
 
 #pragma region Windows Form Designer generated code
 	private: System::Void checkBoxRedChannel_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
@@ -66,20 +63,28 @@ namespace OpenGL {
 	private: System::Void ToolWindow_Load(System::Object^ sender, System::EventArgs^ e) 
 	{
 	}
+	private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs^ e)
+	{
+		Intensity = this->trackBar1->Value / 100.0f;
+	}
+
 
 	void InitializeComponent(void)
 		{
+		this->components = (gcnew System::ComponentModel::Container());
 		this->checkBoxRedChannel = (gcnew System::Windows::Forms::CheckBox());
 		this->checkBoxGreenChannel = (gcnew System::Windows::Forms::CheckBox());
 		this->checkBoxBlueChannel = (gcnew System::Windows::Forms::CheckBox());
+		this->trackBar1 = (gcnew System::Windows::Forms::TrackBar());
 		this->SuspendLayout();
 		// 
 		// checkBoxRedChannel
 		// 
 		this->checkBoxRedChannel->AutoSize = true;
-		this->checkBoxRedChannel->Location = System::Drawing::Point(42, 49);
+		this->checkBoxRedChannel->Location = System::Drawing::Point(84, 95);
+		this->checkBoxRedChannel->Margin = System::Windows::Forms::Padding(6);
 		this->checkBoxRedChannel->Name = L"checkBoxRedChannel";
-		this->checkBoxRedChannel->Size = System::Drawing::Size(211, 36);
+		this->checkBoxRedChannel->Size = System::Drawing::Size(184, 35);
 		this->checkBoxRedChannel->TabIndex = 0;
 		this->checkBoxRedChannel->Text = L"RedChannel";
 		this->checkBoxRedChannel->UseVisualStyleBackColor = true;
@@ -88,35 +93,49 @@ namespace OpenGL {
 		// checkBoxGreenChannel
 		// 
 		this->checkBoxGreenChannel->AutoSize = true;
-		this->checkBoxGreenChannel->Location = System::Drawing::Point(42, 117);
+		this->checkBoxGreenChannel->Location = System::Drawing::Point(84, 227);
+		this->checkBoxGreenChannel->Margin = System::Windows::Forms::Padding(6);
 		this->checkBoxGreenChannel->Name = L"checkBoxGreenChannel";
-		this->checkBoxGreenChannel->Size = System::Drawing::Size(238, 36);
+		this->checkBoxGreenChannel->Size = System::Drawing::Size(209, 35);
 		this->checkBoxGreenChannel->TabIndex = 1;
 		this->checkBoxGreenChannel->Text = L"GreenChannel";
 		this->checkBoxGreenChannel->UseVisualStyleBackColor = true;
 		this->checkBoxGreenChannel->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::checkBoxGreenChannel_CheckedChanged);
-
 		// 
 		// checkBoxBlueChannel
 		// 
 		this->checkBoxBlueChannel->AutoSize = true;
-		this->checkBoxBlueChannel->Location = System::Drawing::Point(42, 184);
+		this->checkBoxBlueChannel->Location = System::Drawing::Point(84, 356);
+		this->checkBoxBlueChannel->Margin = System::Windows::Forms::Padding(6);
 		this->checkBoxBlueChannel->Name = L"checkBoxBlueChannel";
-		this->checkBoxBlueChannel->Size = System::Drawing::Size(217, 36);
+		this->checkBoxBlueChannel->Size = System::Drawing::Size(188, 35);
 		this->checkBoxBlueChannel->TabIndex = 2;
 		this->checkBoxBlueChannel->Text = L"BlueChannel";
 		this->checkBoxBlueChannel->UseVisualStyleBackColor = true;
 		this->checkBoxBlueChannel->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::checkBoxBlueChannel_CheckedChanged);
-
+		// 
+		// trackBar1
+		// 
+		this->trackBar1->Location = System::Drawing::Point(84, 520);
+		this->trackBar1->Minimum = 0;
+		this->trackBar1->Maximum = 100;
+		this->trackBar1->Value = 100; // default full intensity
+		this->trackBar1->TickFrequency = 10;
+		this->trackBar1->Name = L"trackBar1";
+		this->trackBar1->Size = System::Drawing::Size(842, 45);
+		this->trackBar1->TabIndex = 3;
+		this->trackBar1->Scroll += gcnew System::EventHandler(this, &ToolWindow::trackBar1_Scroll);
 		// 
 		// ToolWindow
 		// 
-		this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+		this->AutoScaleDimensions = System::Drawing::SizeF(16, 31);
 		this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-		this->ClientSize = System::Drawing::Size(566, 467);
+		this->ClientSize = System::Drawing::Size(1132, 905);
+		this->Controls->Add(this->trackBar1);
 		this->Controls->Add(this->checkBoxBlueChannel);
 		this->Controls->Add(this->checkBoxGreenChannel);
 		this->Controls->Add(this->checkBoxRedChannel);
+		this->Margin = System::Windows::Forms::Padding(6);
 		this->Name = L"ToolWindow";
 		this->Text = L"ToolWindow";
 		this->Load += gcnew System::EventHandler(this, &ToolWindow::ToolWindow_Load);
@@ -124,5 +143,6 @@ namespace OpenGL {
 		this->PerformLayout();
 
 	}
+
 };
 }

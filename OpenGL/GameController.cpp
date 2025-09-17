@@ -32,6 +32,9 @@ void GameController::RunGame()
 		glUniform1i(loc, (int)OpenGL::ToolWindow::RenderGreenChannel);
 		loc = glGetUniformLocation(shader->GetProgramID(), "RenderBlueChannel");
 		glUniform1i(loc, (int)OpenGL::ToolWindow::RenderBlueChannel);
+
+		GLint intensityLoc = glGetUniformLocation(shader->GetProgramID(), "Intensity");
+		glUniform1f(intensityLoc, OpenGL::ToolWindow::Intensity);
 		
 		glClear(GL_COLOR_BUFFER_BIT);
 		mesh->Render();

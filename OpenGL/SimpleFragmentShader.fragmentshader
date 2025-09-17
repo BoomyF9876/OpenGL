@@ -3,8 +3,11 @@
 uniform int RenderRedChannel;
 uniform int RenderGreenChannel;
 uniform int RenderBlueChannel;
+uniform float Intensity;
 
 void main()
 {
-	gl_FragColor = vec4(RenderRedChannel,RenderGreenChannel,RenderBlueChannel,1.0); // Output color = red
+    vec3 color = vec3(float(RenderRedChannel),float(RenderGreenChannel),float(RenderBlueChannel));
+    color *= Intensity;
+    gl_FragColor = vec4(color, 1.0);
 }
