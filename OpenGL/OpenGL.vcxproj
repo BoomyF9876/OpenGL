@@ -132,8 +132,12 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameController.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ToolWindow.cpp" />
+    <ClCompile Include="WindowController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleFragmentShader.fragmentshader" />
@@ -147,9 +151,14 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameController.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="StandardIncludes.h" />
     <ClInclude Include="ToolWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WindowController.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ToolWindow.resx">
