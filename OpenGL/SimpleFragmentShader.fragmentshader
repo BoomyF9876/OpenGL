@@ -7,7 +7,5 @@ uniform float Intensity;
 
 void main()
 {
-    vec3 color = vec3(float(RenderRedChannel),float(RenderGreenChannel),float(RenderBlueChannel));
-    color *= Intensity;
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(RenderRedChannel,RenderGreenChannel,RenderBlueChannel, 1.0)*Intensity;// Set the output color by multiplying the input color by the intensity by percentage
 }
