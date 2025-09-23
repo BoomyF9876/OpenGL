@@ -12,6 +12,8 @@ void Shader::LoadAttributes()
 {
 	//Get a handle for our vertex attribute
 	attrVertices = glGetAttribLocation(programID, "vertices");
+	attrColor = glGetAttribLocation(programID, "colors");
+	attrWVP = glGetUniformLocation(programID, "WVP");//Get a handle for WVP
 }
 
 void Shader::EvaluateShader(int _infoLength, GLuint _id)

@@ -24,6 +24,9 @@ public:
 
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 
+	GLuint GetAttrWVP() { return attrWVP; }
+	GLuint GetAttrColor() { return attrColor; }
+
 private:
 	void CreateShaderProgram(const char* _vertexFilePath, const char* _fragmentFilePath);
 	GLuint LoadShaderFile(const char* _filePath, GLenum _type);
@@ -32,6 +35,8 @@ private:
 
 	GLuint programID = 0;
 	GLuint attrVertices = 0;
+	GLuint attrWVP = 0;
+	GLuint attrColor = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;

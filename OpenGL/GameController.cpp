@@ -9,6 +9,8 @@ void GameController::Initialize()
 	M_ASSERT(glewInit() == GLEW_OK, "Unable to initialize glew");
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);//Ensure we can capture the escape key
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);//Dark blue background
+
+	camera = new Camera(WindowController::GetInstance().GetResolution());
 }
 
 void GameController::RunGame()
@@ -19,7 +21,7 @@ void GameController::RunGame()
 	mesh->Create(shader);
 
 	OpenGL::ToolWindow^ toolWindow = gcnew OpenGL::ToolWindow();
-	toolWindow->Show();
+	//toolWindow->Show();
 
 	GLFWwindow* window = WindowController::GetInstance().GetWindow();
 	do
@@ -37,7 +39,7 @@ void GameController::RunGame()
 		glUniform1f(intensityLoc, OpenGL::ToolWindow::Intensity);
 		
 		glClear(GL_COLOR_BUFFER_BIT);
-		mesh->Render();
+		mesh->Render(camera->GetProjection()*camera->GetView());
 		
 		glfwSwapBuffers(window);// Swap front and back buffers
 		glfwPollEvents();

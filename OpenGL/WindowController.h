@@ -16,6 +16,8 @@ public:
 		return instance;
 	}
 
+	void Create(int width = -1, int height = -1);
+
 	GLFWwindow* GetWindow()
 	{
 		if (window == nullptr)
@@ -27,10 +29,15 @@ public:
 	}
 
 	void NewWindow();
+	Resolution& GetResolution() 
+	{
+		return resolution;
+	}
 
 private:
 	WindowController() = default;
 	~WindowController();
+	Resolution resolution = {1024, 768};
 };
 
 #endif

@@ -1,8 +1,13 @@
-#version 120 // OpenGL version 2.1 (minimum requirement)
+#version 330 // OpenGL version 3.3 (minimum requirement)
 
 in vec3 vertices; // Value sent from application to this attribute
+in vec4 colors; // Value sent from application to this attribute
+uniform mat4 WVP; // Model-View-Projection matrix sent from application to this uniform
+
+out vec4 retColor; // Output variable for fragment shader
 
 void main()
 {
-	gl_Position = vec4(vertices,1.0); // Pass-through, shader, pass positions to next shader
+	gl_Position = WVP * vec4(vertices,1.0); // Pass-through, shader, pass positions to next shader
+	retColor = colors; 
 }
