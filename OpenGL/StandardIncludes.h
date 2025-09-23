@@ -21,4 +21,6 @@
 #include <glm/glm.hpp> //Include GLM
 #include<glm/gtc/matrix_transform.hpp>
 
+#include "Resolution.h"
+
 #endif //!_STANDARDINCLUDES_H_

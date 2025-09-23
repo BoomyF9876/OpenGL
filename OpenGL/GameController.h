@@ -6,6 +6,7 @@
 #include "StandardIncludes.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Camera.h"
 
 class GameController
 {
@@ -19,5 +20,6 @@ class GameController
 private:
 	Shader* shader = nullptr;
 	Mesh* mesh = nullptr;
+	Camera* camera = nullptr;
 };
 #endif //!_GAMECONTROLLER_H_
