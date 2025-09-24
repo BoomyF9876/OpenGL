@@ -9,8 +9,10 @@ void GameController::Initialize()
 	M_ASSERT(glewInit() == GLEW_OK, "Unable to initialize glew");
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);//Ensure we can capture the escape key
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);//Dark blue background
+	glEnable(GL_CULL_FACE);
 
 	camera = new Camera(WindowController::GetInstance().GetResolution());
+	camera->LookAt({ 200,200,200 }, { 0,0,0 }, { 0,1,0 });
 }
 
 void GameController::RunGame()
