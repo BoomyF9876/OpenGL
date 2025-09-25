@@ -70,10 +70,10 @@
     <ClInclude Include="GameController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resolution.h">
+    <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="Resolution.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

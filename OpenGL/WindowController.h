@@ -34,6 +34,8 @@ public:
 		return resolution;
 	}
 
+	void ResizeWindow(Resolution _res);
+
 private:
 	WindowController() = default;
 	~WindowController();

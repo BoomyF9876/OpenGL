@@ -50,8 +50,6 @@ void Mesh::Render(glm::mat4 _wvp)
 {
 	glUseProgram(shader->GetProgramID());//Use our shader
 
-	world = glm::rotate(world, glm::radians(0.1f), glm::vec3(0, 1, 0));
-
 	//1st attribute buffer : vertices
 	glEnableVertexAttribArray(shader->GetAttrVertices());
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
