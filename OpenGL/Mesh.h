@@ -15,15 +15,7 @@ public:
 	void Create(Shader* _shader);
 	void Render(glm::mat4 _wvp);
 
-	void RotateX(float degrees) 
-	{ 
-		rotationX += degrees; 
-	}
-
-	void RotateY(float degrees) 
-	{ 
-		rotationY += degrees;
-	}
+	void Transform(); // Rotation and scale
 
 private:
 	Shader* shader = nullptr;
@@ -35,6 +27,8 @@ private:
 
 	float rotationX = 0.0f;
 	float rotationY = 0.0f;
+	double startTime = 0.0;
+
 };
 
 #endif //!_MESH_H_

@@ -9,6 +9,9 @@ Mesh::~Mesh()
 void Mesh::Create(Shader* _shader)
 {
 	shader = _shader;
+
+	startTime = glfwGetTime();// initrialize time
+
 #pragma region Icosahedron Vertix Data
 	float a = 26.0f;
 	float b = 42.0f;
@@ -44,6 +47,46 @@ void Mesh::Create(Shader* _shader)
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(GLuint), indexData.data(), GL_STATIC_DRAW);
+}
+
+void Mesh::Transform() // Rotation and scale
+{
+	GLFWwindow* window = glfwGetCurrentContext();
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{ 
+		rotationX -= 1.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{ 
+		rotationY += 1.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{ 
+		rotationX += 1.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{ 
+		rotationY -= 1.0f;
+}
+
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::rotate(transform, glm::radians(rotationX), glm::vec3(1, 0, 0));
+	transform = glm::rotate(transform, glm::radians(rotationY), glm::vec3(0, 1, 0));
+
+	double currentTime = glfwGetTime() - startTime;
+	const float min = 0.01f;
+	const float max = 2.0f;
+	const float period = 2.0f;
+
+	float currentPos = fmod((float)currentTime, period) / period;
+	const float PI = glm::pi<float>();
+	float eased = (sin(currentPos * 2.0f * PI) + 1.0f) / 2.0f;
+	float finalScale = min + eased * (max - min);
+
+	transform = glm::scale(transform, glm::vec3(finalScale));
+
+	world = transform;
 }
 
 void Mesh::Render(glm::mat4 _wvp)

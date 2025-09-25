@@ -32,8 +32,5 @@ private:
 
     int currentCameraIndex = 0;
     int currentResolutionIndex = 0;
-
-    float rotationX = 0.0f;
-    float rotationY = 0.0f;
 };
 #endif //!_GAMECONTROLLER_H_

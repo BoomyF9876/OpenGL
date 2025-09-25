@@ -42,7 +42,7 @@ void GameController::UpdateAllProjections(float fov, float nearPlane, float farP
 	{
 		if (cameras[i])
 		{
-			const Resolution& res = resolutions[currentResolutionIndex];
+			Resolution& res = resolutions[currentResolutionIndex];
 			glm::mat4 proj = glm::perspective(glm::radians(fov),
 				(float)res.width / (float)res.height,
 				nearPlane,
@@ -112,49 +112,10 @@ void GameController::RunGame()
 		glUniform1f(intensityLoc, OpenGL::ToolWindow::Intensity);
 
 
-		//WASD 
-		
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) 
-		{ 
-			rotationX -= 1.0f;
-		} 
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) 
-		{ 
-			rotationY -= 1.0f;
-		} 
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) 
-		{ 
-			rotationX += 1.0f;
-		} 
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		{
-			rotationY += 1.0f;
-		}
-
-		glm::mat4 world = glm::mat4(1.0f);
-		world = glm::rotate(world, glm::radians(rotationX), glm::vec3(1, 0, 0));
-		world = glm::rotate(world, glm::radians(rotationY), glm::vec3(0, 1, 0));
-
-
-		
-		double currentTime = glfwGetTime() - startTime; 
-
-		const float MIN_SCALE = 0.01f;    
-		const float MAX_SCALE = 2.0f;     
-		const float PERIOD = 2.0f;        
-
-		float phase = fmod((float)currentTime, PERIOD) / (float)PERIOD;
-
-		const float PI = glm::pi<float>();
-		float eased = (sin(phase * 2.0f * PI) + 1.0f) / 2.0f;
-
-		float finalScale = MIN_SCALE + eased * (MAX_SCALE - MIN_SCALE);
-
-		world = glm::scale(world, glm::vec3(finalScale));
-
+		mesh->Transform();
 		
 		glClear(GL_COLOR_BUFFER_BIT);
-		mesh->Render(cameras[currentCameraIndex]->GetProjection() * cameras[currentCameraIndex]->GetView()*world);
+		mesh->Render(cameras[currentCameraIndex]->GetProjection() * cameras[currentCameraIndex]->GetView());
 
 		
 		glfwSwapBuffers(window);// Swap front and back buffers
