@@ -10,10 +10,10 @@ GameController::GameController()
 	cameras[3] = new Camera(resolutions[3]);
 
 	//LookAt(const glm::vec3& _position, const glm::vec3& _lookAt, const glm::vec3& _up);
-	cameras[0]->LookAt({ 200, 200, 200 }, { 0, 0, 0 }, { 0, 1, 0 });
-	cameras[1]->LookAt({ -200, -200, -200 }, { 0, 0, 0 }, { 0, 1, 0 });
-	cameras[2]->LookAt({ 100, 300, 100 }, { 0, 0, 0 }, { 0, 1, 0 });
-	cameras[3]->LookAt({ 400, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 });
+	cameras[0]->LookAt({200,200,200},{0,0,0}, {0,1,0});
+	cameras[1]->LookAt({-200,-200,-200},{0,0,0}, {0,1,0});
+	cameras[2]->LookAt({100,300,100}, {0,0,0}, {0,1,0});
+	cameras[3]->LookAt({400,0,0},{0,0,0}, {0,1,0});
 
 }
 
@@ -66,6 +66,7 @@ void GameController::RunGame()
 
 	bool cWasPressed = false;
 	bool vWasPressed = false;
+	double startTime = glfwGetTime();
 	do
 	{
 		System::Windows::Forms::Application::DoEvents();
@@ -73,7 +74,7 @@ void GameController::RunGame()
 
 		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
 			if (!cWasPressed) {
-				currentCameraIndex = (currentCameraIndex + 1) % 4;
+				currentCameraIndex = (currentCameraIndex + 1) % 4; // remainder
 				cWasPressed = true;
 			}
 		}
@@ -134,11 +135,22 @@ void GameController::RunGame()
 		world = glm::rotate(world, glm::radians(rotationX), glm::vec3(1, 0, 0));
 		world = glm::rotate(world, glm::radians(rotationY), glm::vec3(0, 1, 0));
 
-	
-		double t = glfwGetTime();
-		float scale = (sin(t * glm::pi<float>()) + 1.0f) / 2.0f;
-		scale = 0.01f + scale * (2.0f - 0.01f);
-		world = glm::scale(world, glm::vec3(scale));
+
+		
+		double currentTime = glfwGetTime() - startTime; 
+
+		const float MIN_SCALE = 0.01f;    
+		const float MAX_SCALE = 2.0f;     
+		const float PERIOD = 2.0f;        
+
+		float phase = fmod((float)currentTime, PERIOD) / (float)PERIOD;
+
+		const float PI = glm::pi<float>();
+		float eased = (sin(phase * 2.0f * PI) + 1.0f) / 2.0f;
+
+		float finalScale = MIN_SCALE + eased * (MAX_SCALE - MIN_SCALE);
+
+		world = glm::scale(world, glm::vec3(finalScale));
 
 		
 		glClear(GL_COLOR_BUFFER_BIT);
