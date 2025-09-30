@@ -1,9 +1,9 @@
 #version 330 // OpenGL version 3.3 (minimum requirement)
 
-in vec4 retColor; // Input variable from vertex shader
-out vec4 FragColor; // Output variable for final color
+in vec4 fragColor; 
+out vec4 outColor; 
 
 void main()
 {
-    FragColor = retColor; // Pass-through color to framebuffer
+    outColor = fragColor;
 }

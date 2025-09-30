@@ -7,19 +7,22 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Camera.h"
+#include <vector>
 
 class GameController
 {
-	public:
-		GameController() = default;
-		~GameController() = default;
-
-	void Initialize();
-	void RunGame();
+public:
+    void Initialize();
+    void RunGame();
 
 private:
-	Shader* shader = nullptr;
-	Mesh* mesh = nullptr;
-	Camera* camera = nullptr;
+    Shader* shader;
+    Camera* camera;
+    Mesh* player;
+    std::vector<Mesh*> npcs; 
+
+    void InitPlayer();
+    void InitNPCs();
+    void UpdateNPCs(float deltaTime);
 };
 #endif //!_GAMECONTROLLER_H_

@@ -5,71 +5,74 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &vertexBuffer);
 }
 
-void Mesh::Create(Shader* _shader)
+void Mesh::Create(Shader* _shader, glm::vec3 pos, glm::vec3 color)
 {
-	shader = _shader;
-	vertexData = {
-		// Triangle 1 (▲)
-		0.0f,  0.5f, 0.0f,   1.0f,0.0f,0.0f,1.0f, // Vertex 1: 左上
-		1.0f,  0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f, // Vertex 2: 右上*
-		0.0f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f, // Vertex 3: 左下*
+    shader = _shader;
+    position = pos;
+    baseColor = color;
+    rotationZ = 0.0f;
 
-		// Triangle 2 (▼)
-		0.0f, -0.5f, 0.0f,   1.0f,0.0f,0.0f,1.0f, // Vertex 4: 左下*
-		1.0f,  0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f, // Vertex 5: 右上*
-		1.0f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f, // Vertex 6: 右下
 
-		// Triangle 3 (▲)
-		1.0f,  0.5f, 0.0f,   1.0f,0.0f,0.0f,1.0f, // Vertex 7: 左上*
-		2.0f,  0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f, // Vertex 8: 右上
-		1.0f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f, // Vertex 9: 左下*
+    vertexData = {
+        //   X     Y     Z      R     G     B     A
+         0.0f,  0.5f, 0.0f,  1.0f,0.0f,0.0f,1.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f, 1.0f,
+         0.5f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f, 1.0f
+    };
 
-		// Triangle 4 (▼)
-		1.0f, -0.5f, 0.0f,   1.0f,0.0f,0.0f,1.0f, // Vertex 10: 左下*
-		2.0f,  0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f, // Vertex 11: 右上*
-		2.0f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f, // Vertex 12: 右下
-
-		// Triangle 5 (▲)
-		2.0f,  0.5f, 0.0f,   1.0f,0.0f,0.0f,1.0f, // Vertex 13: 左上*
-		3.0f,  0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f, // Vertex 14: 右上
-		2.0f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f  // Vertex 15: 左下*
-	};
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
 }
 
-void Mesh::Render(glm::mat4 _wvp)
+void Mesh::Render(glm::mat4 VP)
 {
-	glUseProgram(shader->GetProgramID());//Use our shader
+    glUseProgram(shader->GetProgramID());
 
-	//1st attribute buffer : vertices
-	glEnableVertexAttribArray(shader->GetAttrVertices());
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	_wvp *= world;
-	glUniformMatrix4fv(shader->GetAttrWVP(), 1, FALSE, &_wvp[0][0]);
-	glVertexAttribPointer(
-		shader->GetAttrVertices(), // The attribute we want to configure
-		3,                          // size
-		GL_FLOAT,                   // type
-		GL_FALSE,                   // normalized?
-		7*sizeof(float),                          // stride
-		(void*)0                    // array buffer offset
-	);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::rotate(model, rotationZ, glm::vec3(0, 0, 1));
 
-	glEnableVertexAttribArray(shader->GetAttrColor());
-	glVertexAttribPointer(
-		shader->GetAttrColor(), // The attribute we want to configure
-		4,                          // size
-		GL_FLOAT,                   // type
-		GL_FALSE,                   // normalized?
-		7 * sizeof(float),                          // stride
-		(void*)(3 * sizeof(float))                    // array buffer offset
-	);
+    glm::mat4 WVP = VP * model;
+    glUniformMatrix4fv(shader->GetAttrWVP(), 1, GL_FALSE, &WVP[0][0]);
 
-	//Draw the triangle !
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glDrawArrays(GL_TRIANGLES, 0, vertexData.size() / 7); // Starting from vertex 0; 3 vertices total -> 1 triangle
-	glDisableVertexAttribArray(shader->GetAttrVertices());
-	glDisableVertexAttribArray(shader->GetAttrColor());
+    vertexData[3] = baseColor.r;
+    vertexData[4] = baseColor.g;
+    vertexData[5] = baseColor.b;
+    vertexData[10] = baseColor.r;
+    vertexData[11] = baseColor.g;
+    vertexData[12] = baseColor.b;
+    vertexData[17] = baseColor.r;
+    vertexData[18] = baseColor.g;
+    vertexData[19] = baseColor.b;
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertexData.size() * sizeof(float), vertexData.data());
+
+    // 顶点坐标
+    glEnableVertexAttribArray(shader->GetAttrVertices());
+    glVertexAttribPointer(
+        shader->GetAttrVertices(),
+        3,
+        GL_FLOAT,
+        GL_FALSE,
+        7 * sizeof(float),
+        (void*)0
+    );
+
+    // 颜色
+    glEnableVertexAttribArray(shader->GetAttrColor());
+    glVertexAttribPointer(
+        shader->GetAttrColor(),
+        4,
+        GL_FLOAT,
+        GL_FALSE,
+        7 * sizeof(float),
+        (void*)(3 * sizeof(float))
+    );
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glDisableVertexAttribArray(shader->GetAttrVertices());
+    glDisableVertexAttribArray(shader->GetAttrColor());
 }

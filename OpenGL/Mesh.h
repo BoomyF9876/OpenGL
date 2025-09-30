@@ -9,17 +9,23 @@
 class Mesh
 {
 public:
-	Mesh() = default;
-	~Mesh();
+    ~Mesh();
+    void Create(Shader* shader, glm::vec3 pos, glm::vec3 color);
+    void Render(glm::mat4 VP);
 
-	void Create(Shader* _shader);
-	void Render(glm::mat4 _wvp);
-	void Render();
+    void SetPosition(glm::vec3 pos) { position = pos; }
+    glm::vec3 GetPosition() const { return position; }
+
+    void SetColor(glm::vec3 col) { baseColor = col; }
+    void SetRotationZ(float angle) { rotationZ = angle; }
+
 private:
-	Shader* shader = nullptr;
-	GLuint vertexBuffer = 0;
-	std::vector<GLfloat> vertexData;
-	glm::mat4 world = glm::mat4(1.0f);
+    Shader* shader;
+    GLuint vertexBuffer;
+    std::vector<float> vertexData;
+    glm::vec3 position;
+    glm::vec3 baseColor;
+    float rotationZ = 0.0f;
 };
 
 #endif //!_MESH_H_
