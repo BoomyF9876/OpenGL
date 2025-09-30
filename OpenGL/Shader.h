@@ -9,23 +9,16 @@
 class Shader
 {
 public:
-	Shader() = default;
 	~Shader();
 
-	GLuint GetProgramID()
-	{
-		return programID;
-	}
-
-	GLuint GetAttrVertices()
-	{
-		return attrVertices;
-	}
-
-	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
-
+	GLuint GetProgramID(){return programID;}
+	GLuint GetAttrVertices(){return attrVertices;}
 	GLuint GetAttrWVP() { return attrWVP; }
 	GLuint GetAttrColor() { return attrColor; }
+	GLuint GetAttrTexCoords() { return attrTexCoords; }
+	GLuint GetTexSampler() { return attrTexSampler;  }
+
+	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 
 private:
 	void CreateShaderProgram(const char* _vertexFilePath, const char* _fragmentFilePath);
@@ -37,6 +30,8 @@ private:
 	GLuint attrVertices = 0;
 	GLuint attrWVP = 0;
 	GLuint attrColor = 0;
+	GLuint attrTexCoords = 0;
+	GLuint attrTexSampler = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
