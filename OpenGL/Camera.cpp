@@ -7,7 +7,7 @@ Camera::Camera(Resolution& _resolution, float _fov, float _near, float _far)
         _near, _far);
 
     view = glm::lookAt(
-        glm::vec3(1, 0, 0),
+        glm::vec3(0, 0, 50),
         glm::vec3(0, 0, 0),
         glm::vec3(0, 1, 0));
 }

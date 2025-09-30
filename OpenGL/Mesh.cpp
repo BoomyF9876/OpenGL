@@ -14,9 +14,9 @@ void Mesh::Create(Shader* _shader, glm::vec3 pos, glm::vec3 color)
 
 
     vertexData = {
-         0.0f,  0.5f, 0.0f,  1.0f,0.0f,0.0f,1.0f, 1.0f,
-        -0.5f, -0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f, 1.0f,
-         0.5f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f, 1.0f
+         0.0f,  0.5f, 0.0f,  1.0f,0.0f,0.0f,1.0f,
+        -0.5f, -0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f,
+         0.5f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f, 
     };
 
     glGenBuffers(1, &vertexBuffer);
