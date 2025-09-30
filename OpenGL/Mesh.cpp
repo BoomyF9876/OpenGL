@@ -14,7 +14,6 @@ void Mesh::Create(Shader* _shader, glm::vec3 pos, glm::vec3 color)
 
 
     vertexData = {
-        //   X     Y     Z      R     G     B     A
          0.0f,  0.5f, 0.0f,  1.0f,0.0f,0.0f,1.0f, 1.0f,
         -0.5f, -0.5f, 0.0f,   0.0f,1.0f,0.0f,1.0f, 1.0f,
          0.5f, -0.5f, 0.0f,   0.0f,0.0f,1.0f,1.0f, 1.0f
@@ -49,7 +48,6 @@ void Mesh::Render(glm::mat4 VP)
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertexData.size() * sizeof(float), vertexData.data());
 
-    // 顶点坐标
     glEnableVertexAttribArray(shader->GetAttrVertices());
     glVertexAttribPointer(
         shader->GetAttrVertices(),
@@ -60,7 +58,6 @@ void Mesh::Render(glm::mat4 VP)
         (void*)0
     );
 
-    // 颜色
     glEnableVertexAttribArray(shader->GetAttrColor());
     glVertexAttribPointer(
         shader->GetAttrColor(),
