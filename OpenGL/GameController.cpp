@@ -10,35 +10,34 @@
 void GameController::Initialize()
 {
 	GLFWwindow* window = WindowController::GetInstance().GetWindow();
-
 	M_ASSERT(glewInit() == GLEW_OK, "Unable to initialize glew");
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);//Ensure we can capture the escape key
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);//Dark blue background
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	camera = new Camera(WindowController::GetInstance().GetResolution());
+	Resolution res = WindowController::GetInstance().GetResolution();
+	camera = new Camera(res, 45.0f, 0.1f, 100.0f);
+
 	shader = new Shader();
 	shader->LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
-
 	InitPlayer();
 	InitNPCs();
-
 	std::srand((unsigned)time(0));
 }
 void GameController::InitPlayer()
 {
 	player = new Mesh();
-	player->Create(shader, glm::vec3(0, 0, 0), glm::vec3(1, 0, 0)); // 红色
+	player->Create(shader, glm::vec3(0, 0, 0), glm::vec3(1, 0, 0));
 }
 
 void GameController::InitNPCs()
 {
 	for (int i = 0; i < 10; i++)
 	{
-		float x = (std::rand() % 2 == 0 ? 1 : -1) * (2 + (std::rand() % 9)); // [2,10] 或 [-10,-2]
+		float x = (std::rand() % 2 == 0 ? 1 : -1) * (2 + (std::rand() % 9));
 		float y = (std::rand() % 2 == 0 ? 1 : -1) * (2 + (std::rand() % 9));
 
 		Mesh* npc = new Mesh();
-		npc->Create(shader, glm::vec3(x, y, 0), glm::vec3(0, 1, 0)); // 绿色
+		npc->Create(shader, glm::vec3(x, y, 0), glm::vec3(0, 1, 0));
 		npcs.push_back(npc);
 	}
 }
@@ -53,29 +52,31 @@ void GameController::UpdateNPCs(float deltaTime)
 		glm::vec3 dir = playerPos - npcPos;
 		float dist = glm::length(dir);
 
-		if (dist < 1.0f)
+		if (dist < 1.0f && !npc->GetIsTouched())
 		{
-			npc->SetColor(glm::vec3(0, 0, 1)); 
+			npc->SetTouched(true);
+			npc->SetColor(glm::vec3(0, 0, 1));
 		}
-		else
+
+		if (npc->GetIsTouched())
 		{
-			npc->SetColor(glm::vec3(0, 1, 0)); 
+			npc->SetColor(glm::vec3(0, 0, 1));
 		}
 
 		if (dist > 0.0001f)
 			dir = glm::normalize(dir);
 
 
-		float speed = 2.0f * deltaTime;
-		if (dist < 10.0f)
+		float speed = 1.0f * deltaTime;
+		if (dist < 5.0f)
 			npcPos -= dir * speed;
-		else if (dist > 11.0f)
+		else if (dist > 6.0f)
 			npcPos += dir * speed;
 
 		npc->SetPosition(npcPos);
 
 		float angle = atan2(playerPos.y - npcPos.y, playerPos.x - npcPos.x);
-		npc->SetRotationZ(angle);
+		npc->SetRotationZ(angle + glm::radians(270.0f));
 	}
 }
 
@@ -99,7 +100,6 @@ void GameController::RunGame()
 
 		UpdateNPCs(deltaTime);
 
-		// 渲染
 		glClear(GL_COLOR_BUFFER_BIT);
 		glm::mat4 VP = camera->GetProjection() * camera->GetView();
 		player->Render(VP);

@@ -11,7 +11,7 @@ void Mesh::Create(Shader* _shader, glm::vec3 pos, glm::vec3 color)
     position = pos;
     baseColor = color;
     rotationZ = 0.0f;
-
+    isTouched = false;
 
     vertexData = {
          0.0f,  0.5f, 0.0f,  1.0f,0.0f,0.0f,1.0f,
