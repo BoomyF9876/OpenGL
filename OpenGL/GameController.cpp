@@ -8,11 +8,11 @@ void GameController::Initialize()
 
 	M_ASSERT(glewInit() == GLEW_OK, "Unable to initialize glew");
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);//Ensure we can capture the escape key
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);//Dark blue background
+	glClearColor(0.0f, 0.0f, 0.5f, 0.0f);//Dark blue background
 	glEnable(GL_CULL_FACE);
 
 	camera = new Camera(WindowController::GetInstance().GetResolution());
-	camera->LookAt({ 100,100,100 }, { 0,0,0 }, { 0,1,0 });
+	camera->LookAt({ 10,10,10 }, { 0,0,0 }, { 0,-1,0 });
 }
 
 void GameController::RunGame()
@@ -28,7 +28,7 @@ void GameController::RunGame()
 	GLFWwindow* window = WindowController::GetInstance().GetWindow();
 	do
 	{
-		System::Windows::Forms::Application::DoEvents();
+		/*System::Windows::Forms::Application::DoEvents();
 		GLint loc = 0;
 		loc = glGetUniformLocation(shader->GetProgramID(), "RenderRedChannel");
 		glUniform1i(loc, (int)OpenGL::ToolWindow::RenderRedChannel);
@@ -38,7 +38,7 @@ void GameController::RunGame()
 		glUniform1i(loc, (int)OpenGL::ToolWindow::RenderBlueChannel);
 
 		GLint intensityLoc = glGetUniformLocation(shader->GetProgramID(), "Intensity");
-		glUniform1f(intensityLoc, OpenGL::ToolWindow::Intensity);
+		glUniform1f(intensityLoc, OpenGL::ToolWindow::Intensity);*/
 		
 		glClear(GL_COLOR_BUFFER_BIT);
 		mesh->Render(camera->GetProjection()*camera->GetView());
