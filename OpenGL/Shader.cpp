@@ -15,7 +15,8 @@ void Shader::LoadAttributes()
 	attrColor = glGetAttribLocation(programID, "colors");
 	attrWVP = glGetUniformLocation(programID, "WVP");//Get a handle for WVP
 	attrTexCoords = glGetAttribLocation(programID, "texCoords");
-	attrTexSampler = glGetUniformLocation(programID, "texSampler");
+	attrTexSampler1 = glGetUniformLocation(programID, "texSampler1");
+	attrTexSampler2 = glGetUniformLocation(programID, "texSampler2");
 }
 
 void Shader::EvaluateShader(int _infoLength, GLuint _id)

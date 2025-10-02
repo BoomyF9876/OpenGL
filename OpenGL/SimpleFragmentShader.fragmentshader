@@ -4,9 +4,13 @@ in vec3 retColor; // Input variable from vertex shader
 in vec2 retTexCoord; // Output variable for final color
 
 out vec4 FragColor;
-uniform sampler2D texSampler;
+
+uniform sampler2D texSampler1;
+uniform sampler2D texSampler2;
 
 void main()
 {
-    FragColor = texture(texSampler, retTexCoord);
+    //FragColor = texture(texSampler, retTexCoord);
+    //FragColor = texture(texSampler, retTexCoord) * vec4(retColor, 1.0f);
+    FragColor = mix(texture(texSampler1, retTexCoord), texture(texSampler2, retTexCoord), 0.5);
 }

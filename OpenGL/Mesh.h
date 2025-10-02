@@ -17,11 +17,12 @@ public:
 	
 private:
 	Shader* shader = nullptr;
-	Texture* texture = nullptr;
+	Texture* texture1 = nullptr;
+	Texture* texture2 = nullptr;
 	GLuint indexBuffer = 0;
 	GLuint vertexBuffer = 0;
 	std::vector<GLfloat> vertexData;
-	std::vector<GLfloat> indexData;
+	std::vector<unsigned int> indexData;
 	glm::mat4 world = glm::mat4(1);
 };
 

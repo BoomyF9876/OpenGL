@@ -4,15 +4,19 @@ Mesh::~Mesh()
 {
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &indexBuffer);
-	delete texture;
+	delete texture1;
+	delete texture2;
 }
 
 void Mesh::Create(Shader* _shader)
 {
 	shader = _shader;
 
-	texture = new Texture();
-	texture->LoadTexture("../Assets/Textures/Tacos.jpg");
+	texture1 = new Texture();
+	texture1->LoadTexture("../Assets/Textures/Tacos.jpg");
+
+	texture2 = new Texture();
+	texture2->LoadTexture("../Assets/Textures/Pattern.png");
 
 	
 
@@ -31,8 +35,8 @@ void Mesh::Create(Shader* _shader)
 	};
 
 	glGenBuffers(1, &indexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, indexData.size() * sizeof(float), indexData.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(float), indexData.data(), GL_STATIC_DRAW);
 
 }
 
@@ -40,9 +44,12 @@ void Mesh::Render(glm::mat4 _wvp)
 {
 	glUseProgram(shader->GetProgramID());//Use our shader
 
-	world = glm::rotate(world, 0.01f, { 0,1,0 });
+	//world = glm::rotate(world, 0.01f, { 0,1,0 });
 	_wvp *= world;
 	glUniformMatrix4fv(shader->GetAttrWVP(), 1, FALSE, &_wvp[0][0]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+
 	glEnableVertexAttribArray(shader->GetAttrVertices());
 	glVertexAttribPointer(
 		shader->GetAttrVertices(), // The attribute we want to configure
@@ -72,13 +79,19 @@ void Mesh::Render(glm::mat4 _wvp)
 		8 * sizeof(float),                          // stride
 		(void*)(6 * sizeof(float))                    // array buffer offset
 	);
-	glBindTexture(GL_TEXTURE_2D, texture->GetTexture());
-	glUniform1i(shader->GetTexSampler(), 0);
 
-	//Draw the triangle !
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture1->GetTexture());
+	glUniform1i(shader->GetTexSampler1(), 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture2->GetTexture());
+	glUniform1i(shader->GetTexSampler2(), 1);
+
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_BYTE, (void*)0); // Starting from vertex 0; 3 vertices total -> 1 triangle
+	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_INT, (void*)0);
+
 	glDisableVertexAttribArray(shader->GetAttrVertices());
 	glDisableVertexAttribArray(shader->GetAttrColor());
 	glDisableVertexAttribArray(shader->GetAttrTexCoords());
