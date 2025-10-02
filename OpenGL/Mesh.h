@@ -22,7 +22,7 @@ private:
 	GLuint indexBuffer = 0;
 	GLuint vertexBuffer = 0;
 	std::vector<GLfloat> vertexData;
-	std::vector<unsigned int> indexData;
+	std::vector<GLuint> indexData;
 	glm::mat4 world = glm::mat4(1);
 };
 
