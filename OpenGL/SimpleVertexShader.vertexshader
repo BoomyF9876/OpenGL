@@ -3,6 +3,7 @@
 in vec3 vertices; // Value sent from application to this attribute
 in vec3 colors; // Value sent from application to this attribute
 in vec2 texCoords;
+in vec2 texScroll; // Scrolling texture offset
 
 uniform mat4 WVP; // Model-View-Projection matrix sent from application to this uniform
 
@@ -13,5 +14,5 @@ void main()
 {
 	gl_Position = WVP * vec4(vertices,1.0); // Pass-through, shader, pass positions to next shader
 	retColor = colors; 
-	retTexCoord = texCoords;
+	retTexCoord = texCoords + texScroll; // Add scrolling offset to texture coordinates
 }

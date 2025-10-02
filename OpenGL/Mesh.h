@@ -24,6 +24,7 @@ private:
 	std::vector<GLfloat> vertexData;
 	std::vector<GLuint> indexData;
 	glm::mat4 world = glm::mat4(1);
+	glm::vec2 texScroll = glm::vec2(0.0f, 0.0f); // Texture scroll offset
 };
 
 #endif //!_MESH_H_

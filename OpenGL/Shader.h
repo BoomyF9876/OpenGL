@@ -18,6 +18,7 @@ public:
 	GLuint GetAttrTexCoords() { return attrTexCoords; }
 	GLuint GetTexSampler1() { return attrTexSampler1; }
 	GLuint GetTexSampler2() { return attrTexSampler2; }
+	GLuint GetAttrTexScroll() { return attrTexScroll; }
 
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 
@@ -34,6 +35,7 @@ private:
 	GLuint attrTexCoords = 0;
 	GLuint attrTexSampler1 = 0;
 	GLuint attrTexSampler2 = 0;
+	GLuint attrTexScroll = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;

@@ -17,6 +17,7 @@ void Shader::LoadAttributes()
 	attrTexCoords = glGetAttribLocation(programID, "texCoords");
 	attrTexSampler1 = glGetUniformLocation(programID, "texSampler1");
 	attrTexSampler2 = glGetUniformLocation(programID, "texSampler2");
+	attrTexScroll = glGetAttribLocation(programID, "texScroll");
 }
 
 void Shader::EvaluateShader(int _infoLength, GLuint _id)

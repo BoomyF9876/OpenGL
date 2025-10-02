@@ -44,6 +44,12 @@ void Mesh::Render(glm::mat4 _wvp)
 {
 	glUseProgram(shader->GetProgramID());//Use our shader
 
+	texScroll.x += 0.001f;
+	texScroll.y += 0.001f; // Scroll speed for each frame
+
+	glVertexAttrib2fv(shader->GetAttrTexScroll(), glm::value_ptr(texScroll)); // Send the scroll offset to the shader
+
+
 	//world = glm::rotate(world, 0.01f, { 0,1,0 });
 	_wvp *= world;
 	glUniformMatrix4fv(shader->GetAttrWVP(), 1, FALSE, &_wvp[0][0]);
