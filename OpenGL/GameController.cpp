@@ -46,26 +46,19 @@ void GameController::UpdateNPCs(float deltaTime)
 {
 	glm::vec3 playerPos = player->GetPosition();
 
-	for (auto& npc : npcs)
+	for (Mesh* npc : npcs)
 	{
 		glm::vec3 npcPos = npc->GetPosition();
 		glm::vec3 dir = playerPos - npcPos;
 		float dist = glm::length(dir);
 
-		if (dist < 1.0f && !npc->GetIsTouched())
+		if (dist < 1.0f)
 		{
 			npc->SetTouched(true);
 			npc->SetColor(glm::vec3(0, 0, 1));
 		}
-
-		if (npc->GetIsTouched())
-		{
-			npc->SetColor(glm::vec3(0, 0, 1));
-		}
-
 		if (dist > 0.0001f)
 			dir = glm::normalize(dir);
-
 
 		float speed = 1.0f * deltaTime;
 		if (dist < 5.0f)
@@ -103,7 +96,7 @@ void GameController::RunGame()
 		glClear(GL_COLOR_BUFFER_BIT);
 		glm::mat4 VP = camera->GetProjection() * camera->GetView();
 		player->Render(VP);
-		for (auto& npc : npcs) npc->Render(VP);
+		for (Mesh* npc : npcs) npc->Render(VP);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -112,6 +105,6 @@ void GameController::RunGame()
 		glfwWindowShouldClose(window) == 0);//check if the window was closed
 
 	delete player;
-	for (auto& npc : npcs) delete npc;
+	for (Mesh* npc : npcs) delete npc;
 	delete shader;
 }

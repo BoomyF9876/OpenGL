@@ -15,7 +15,6 @@ public:
 
     void SetPosition(glm::vec3 pos) { position = pos; }
     glm::vec3 GetPosition() const { return position; }
-    bool GetIsTouched() const { return isTouched; }
     void SetTouched(bool touched) { isTouched = touched; }
     void SetColor(glm::vec3 col) { baseColor = col; }
     void SetRotationZ(float angle) { rotationZ = angle; }
