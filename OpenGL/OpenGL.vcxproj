@@ -142,6 +142,8 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <ClCompile Include="WindowController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Diffuse.fragmentshader" />
+    <None Include="Diffuse.vertexshader" />
     <None Include="SimpleFragmentShader.fragmentshader" />
     <None Include="SimpleVertexShader.vertexshader" />
   </ItemGroup>

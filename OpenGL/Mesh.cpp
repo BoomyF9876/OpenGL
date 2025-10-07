@@ -21,28 +21,64 @@ void Mesh::Create(Shader* _shader)
 	
 
 	vertexData = {
-		50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-		50.0f, -50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-		-50.0f, -50.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-		-50.0f, 50.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+		/* Position */ /* Normals */ /* Texture
+Coords */
+-50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+-50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+-50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+-50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+-50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+-50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+-50.0f, 50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+-50.0f, 50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+-50.0f, -50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+-50.0f, -50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+-50.0f, -50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+-50.0f, 50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+50.0f, 50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+50.0f, 50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+50.0f, -50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+50.0f, -50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+50.0f, -50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+50.0f, 50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+-50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+-50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+-50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+-50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+-50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+-50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
 	};
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
 
-	indexData = {
+	/*indexData = {
 		2,0,3,2,1,0
-	};
+	};*/
 
-	glGenBuffers(1, &indexBuffer);
+	/*glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(float), indexData.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(float), indexData.data(), GL_STATIC_DRAW);*/
 
 }
 
 void Mesh::Render(glm::mat4 _wvp)
 {
 	glUseProgram(shader->GetProgramID());//Use our shader
+
+	shader->SetVec3("DiffuseColor", {1.0f, 0.0f, 0.0f});
 
 	texScroll.x += 0.001f;
 	texScroll.y += 0.001f; // Scroll speed for each frame
@@ -66,15 +102,25 @@ void Mesh::Render(glm::mat4 _wvp)
 		(void*)0                    // array buffer offset
 	);
 
-	glEnableVertexAttribArray(shader->GetAttrColor());
+	glEnableVertexAttribArray(shader->GetAttrNormals());
 	glVertexAttribPointer(
-		shader->GetAttrColor(), // The attribute we want to configure
+		shader->GetAttrNormals(), // The attribute we want to configure
 		3,                          // size
 		GL_FLOAT,                   // type
 		GL_FALSE,                   // normalized?
 		8 * sizeof(float),                          // stride
-		(void*)(3 * sizeof(float))                    // array buffer offset
+		(void*)(3*sizeof(float))                    // array buffer offset
 	);
+
+	//glEnableVertexAttribArray(shader->GetAttrColor());
+	//glVertexAttribPointer(
+	//	shader->GetAttrColor(), // The attribute we want to configure
+	//	3,                          // size
+	//	GL_FLOAT,                   // type
+	//	GL_FALSE,                   // normalized?
+	//	8 * sizeof(float),                          // stride
+	//	(void*)(3 * sizeof(float))                    // array buffer offset
+	//);
 
 	glEnableVertexAttribArray(shader->GetAttrTexCoords());
 	glVertexAttribPointer(
@@ -94,11 +140,19 @@ void Mesh::Render(glm::mat4 _wvp)
 	glBindTexture(GL_TEXTURE_2D, texture2->GetTexture());
 	glUniform1i(shader->GetTexSampler2(), 1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	/*glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	glDrawElements(GL_TRIANGLES, indexData.size(), GL_UNSIGNED_INT, (void*)0);
 
 	glDisableVertexAttribArray(shader->GetAttrVertices());
 	glDisableVertexAttribArray(shader->GetAttrColor());
+	glDisableVertexAttribArray(shader->GetAttrTexCoords());*/
+
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glDrawArrays(GL_TRIANGLES, 0, vertexData.size() / 8);
+	glDisableVertexAttribArray(shader->GetAttrVertices());
+	glDisableVertexAttribArray(shader->GetAttrNormals());
 	glDisableVertexAttribArray(shader->GetAttrTexCoords());
+	glBindVertexArray(0);
+
 }

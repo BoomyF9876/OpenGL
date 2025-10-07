@@ -18,6 +18,16 @@ void Shader::LoadAttributes()
 	attrTexSampler1 = glGetUniformLocation(programID, "texSampler1");
 	attrTexSampler2 = glGetUniformLocation(programID, "texSampler2");
 	attrTexScroll = glGetAttribLocation(programID, "texScroll");
+	attrNormals = glGetAttribLocation(programID, "normals");
+}
+
+void Shader::SetVec3(const char* _name, glm::vec3 _value)
+{
+	GLuint loc = glGetUniformLocation(programID, _name);
+	if (loc != -1)
+	{
+		glUniform3fv(loc, 1, &_value[0]);
+	}
 }
 
 void Shader::EvaluateShader(int _infoLength, GLuint _id)

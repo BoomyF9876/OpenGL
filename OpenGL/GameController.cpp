@@ -9,16 +9,16 @@ void GameController::Initialize()
 	M_ASSERT(glewInit() == GLEW_OK, "Unable to initialize glew");
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);//Ensure we can capture the escape key
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);//Dark blue background
-	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
 	camera = new Camera(WindowController::GetInstance().GetResolution());
-	camera->LookAt({ 100,100,100 }, { 0,0,0 }, { 0,1,0 });
+	camera->LookAt({ 200,200,200 }, { 0,0,0 }, { 0,1,0 });
 }
 
 void GameController::RunGame()
 {
 	shader = new Shader();
-	shader->LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+	shader->LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
 	mesh = new Mesh();
 	mesh->Create(shader);
 
@@ -28,7 +28,7 @@ void GameController::RunGame()
 	GLFWwindow* window = WindowController::GetInstance().GetWindow();
 	do
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		mesh->Render(camera->GetProjection()*camera->GetView());
 		
 		glfwSwapBuffers(window);// Swap front and back buffers

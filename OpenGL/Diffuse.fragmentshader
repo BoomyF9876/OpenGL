@@ -1,0 +1,15 @@
+#version 330 // OpenGL version 3.3 (minimum requirement)
+
+in vec3 retNormal;
+in vec2 retTexCoords;
+
+out vec4 fragColor;
+
+uniform vec3 DiffuseColor;
+uniform sampler2D texSampler1;
+uniform sampler2D texSampler2;
+
+void main()
+{
+	fragColor = vec4(DiffuseColor,1.0f) * texture(texSampler1, retTexCoords);
+}

@@ -19,7 +19,9 @@ public:
 	GLuint GetTexSampler1() { return attrTexSampler1; }
 	GLuint GetTexSampler2() { return attrTexSampler2; }
 	GLuint GetAttrTexScroll() { return attrTexScroll; }
+	GLuint GetAttrNormals() { return attrNormals; }
 
+	void SetVec3(const char* _name, glm::vec3 _value);
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 
 private:
@@ -36,6 +38,7 @@ private:
 	GLuint attrTexSampler1 = 0;
 	GLuint attrTexSampler2 = 0;
 	GLuint attrTexScroll = 0;
+	GLuint attrNormals = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;
