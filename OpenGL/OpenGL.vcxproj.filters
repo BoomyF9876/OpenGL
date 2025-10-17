@@ -45,12 +45,27 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="json.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleFragmentShader.fragmentshader">
       <Filter>Shaders</Filter>
     </None>
     <None Include="SimpleVertexShader.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Diffuse.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Diffuse.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Color.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Color.vertexshader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -80,6 +95,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

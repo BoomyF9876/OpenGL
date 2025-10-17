@@ -1,25 +1,27 @@
 #pragma once
-
-#ifndef _GAMECONTROLLER_H_
-#define _GAMECONTROLLER_H_
-
-#include "StandardIncludes.h"
+#include "Camera.h"
 #include "Shader.h"
 #include "Mesh.h"
-#include "Camera.h"
+#include <GLFW/glfw3.h>
 
 class GameController
 {
-	public:
-		GameController() = default;
-		~GameController() = default;
-
-	void Initialize();
-	void RunGame();
-
 private:
-	Shader* shader = nullptr;
-	Mesh* mesh = nullptr;
-	Camera* camera = nullptr;
+    Camera* camera = nullptr;
+
+    // Shaders
+    Shader* shaderColor = nullptr;
+    Shader* shaderDiffuse = nullptr;
+
+    Mesh* sun = nullptr;
+    Mesh* earth = nullptr;
+    Mesh* moon = nullptr;
+
+    double lastTime = 0.0;
+
+public:
+    void Initialize();
+    void RunGame();
+    void LoadSolarSystem();
+    void LoadSettingsFromJSON();
 };
-#endif //!_GAMECONTROLLER_H_

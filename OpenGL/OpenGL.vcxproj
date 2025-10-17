@@ -134,6 +134,7 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameController.cpp" />
+    <ClCompile Include="json.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -142,6 +143,8 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <ClCompile Include="WindowController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Color.fragmentshader" />
+    <None Include="Color.vertexshader" />
     <None Include="Diffuse.fragmentshader" />
     <None Include="Diffuse.vertexshader" />
     <None Include="SimpleFragmentShader.fragmentshader" />
@@ -157,6 +160,7 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameController.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Resolution.h" />
     <ClInclude Include="Shader.h" />

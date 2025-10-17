@@ -23,5 +23,13 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Resolution.h"
+#include "json.hpp"
+
+inline json::JSON LoadJSON(const std::string & filename)
+{
+    std::ifstream file(filename);
+    std::string str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    return json::JSON::Load(str);
+}
 
 #endif //!_STANDARDINCLUDES_H_

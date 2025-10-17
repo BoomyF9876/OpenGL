@@ -1,15 +1,23 @@
 #version 330 // OpenGL version 3.3 (minimum requirement)
 
+in vec3 retFragPos;
 in vec3 retNormal;
 in vec2 retTexCoords;
 
-out vec4 fragColor;
+out vec4 FragColor;
 
+uniform vec3 LightPosition;
+uniform vec3 LightColor;
+uniform vec3 LightDirection;
+uniform vec3 AmbientLight;
 uniform vec3 DiffuseColor;
 uniform sampler2D texSampler1;
-uniform sampler2D texSampler2;
+// uniform sampler2D texSampler2;
 
 void main()
 {
-	fragColor = vec4(DiffuseColor,1.0f) * texture(texSampler1, retTexCoords);
+	vec3 lightDir = normalize(LightPosition - retFragPos);
+	vec3 lambertian = dot(lightDir, retNormal) * LightColor;
+	vec3 outColor = clamp(lambertian * DiffuseColor + AmbientLight, 0.0f, 1.0f) ;
+	FragColor = vec4(outColor, 1.0f) * texture(texSampler1, retTexCoords);
 }

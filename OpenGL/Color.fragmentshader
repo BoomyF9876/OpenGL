@@ -1,0 +1,10 @@
+#version 330 // OpenGL version 3.3 (minimum requirement)
+
+out vec4 FragColor;
+
+uniform vec3 LightColor; // we set this variable in the OpenGL code.
+
+void main()
+{
+	FragColor = vec4(LightColor.x, LightColor.y, LightColor.z, 1.0);
+}
