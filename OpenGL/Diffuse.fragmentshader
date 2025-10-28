@@ -3,21 +3,41 @@
 in vec3 retFragPos;
 in vec3 retNormal;
 in vec2 retTexCoords;
+in vec3 retViewDirection;
 
 out vec4 FragColor;
 
-uniform vec3 LightPosition;
-uniform vec3 LightColor;
-uniform vec3 LightDirection;
-uniform vec3 AmbientLight;
-uniform vec3 DiffuseColor;
-uniform sampler2D texSampler1;
-// uniform sampler2D texSampler2;
+struct Marterial
+{
+	sampler2D diffuseTexture;
+	sampler2D specularTexture;
+	float specularStrength;
+};
+
+struct Light
+{
+	vec3 position;
+	vec3 direction;
+	vec3 color;
+	vec3 ambientColor;
+	vec3 diffuseColor;
+	vec3 specularColor;
+};
+
+uniform Marterial material;
+uniform Light light;
 
 void main()
 {
-	vec3 lightDir = normalize(LightPosition - retFragPos);
-	vec3 lambertian = dot(lightDir, retNormal) * LightColor;
-	vec3 outColor = clamp(lambertian * DiffuseColor + AmbientLight, 0.0f, 1.0f) ;
-	FragColor = vec4(outColor, 1.0f) * texture(texSampler1, retTexCoords);
+	vec3 lightDir = normalize(light.position - retFragPos);
+	vec3 lambertrianStrength = dot(lightDir, retNormal) *light.color;
+
+	vec3 refl = reflect(-lightDir, retNormal);
+	float specularStrength = pow(max(dot(retViewDirection, refl), 0.0f), material.specularStrength);
+	
+	vec3 ambient = texture(material.diffuseTexture, retTexCoords).rgb * light.ambientColor;
+	vec3 lambertian = lambertrianStrength * texture(material.diffuseTexture, retTexCoords).rgb * light.diffuseColor;
+	vec3 specular = specularStrength * texture(material.specularTexture, retTexCoords).rgb * light.specularColor;
+	
+	FragColor = vec4(ambient + lambertian + specular, 1.0f);
 }

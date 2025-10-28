@@ -11,114 +11,56 @@ void GameController::Initialize()
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
+    srand(time(0));
 
     camera = new Camera(WindowController::GetInstance().GetResolution());
-
-    LoadSettingsFromJSON();
+	camera->LookAt({ 200,200,200 }, { 0, 0, 0 }, { 0, 1, 0 });
 }
 
-void GameController::LoadSettingsFromJSON()
-{
-    json::JSON root = LoadJSON("settings.json");
-    auto cam = root.at("Camera");
-
-    glm::vec3 camPos = { (float)cam["Position"]["x"].ToFloat(),
-                         (float)cam["Position"]["y"].ToFloat(),
-                         (float)cam["Position"]["z"].ToFloat() };
-
-    glm::vec3 camLookAt = { (float)cam["LookAt"]["x"].ToFloat(),
-                            (float)cam["LookAt"]["y"].ToFloat(),
-                            (float)cam["LookAt"]["z"].ToFloat() };
-
-    camera->LookAt(camPos, camLookAt, { 0, 1, 0 });
-}
-
-void GameController::LoadSolarSystem()
-{
-    shaderColor = new Shader();
-    shaderColor->LoadShaders("Color.vertexshader", "Color.fragmentshader");
-
-    shaderDiffuse = new Shader();
-    shaderDiffuse->LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
-
-    sun = new Mesh();
-    sun->LoadFromJSON("sun.json", shaderColor);
-
-    earth = new Mesh();
-    earth->LoadFromJSON("earth.json", shaderDiffuse);
-    earth->SetLightPosition(sun->GetPosition());
-    earth->SetLightColor(sun->GetLightColor());
-
-    moon = new Mesh();
-    moon->LoadFromJSON("moon.json", shaderDiffuse);
-    moon->SetLightPosition(sun->GetPosition());
-    moon->SetLightColor(sun->GetLightColor());
-
-    OpenGL::ToolWindow::LightR = sun->GetLightColor().r;
-    OpenGL::ToolWindow::LightG = sun->GetLightColor().g;
-    OpenGL::ToolWindow::LightB = sun->GetLightColor().b;
-
-    OpenGL::ToolWindow::Position_X = earth->GetPosition().x;
-    OpenGL::ToolWindow::Position_Y = earth->GetPosition().y;
-    OpenGL::ToolWindow::Position_Z = earth->GetPosition().z;
-}
 
 void GameController::RunGame()
 {
-    LoadSolarSystem();
+	shaderColor = new Shader();
+	shaderColor->LoadShaders("Color.vertexshader", "Color.fragmentshader");
+	shaderDiffuse = new Shader();
+	shaderDiffuse->LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
 
-    OpenGL::ToolWindow^ toolWindow = gcnew OpenGL::ToolWindow();
-    toolWindow->Show(); 
+	meshLight = new Mesh();
+	meshLight->Create(shaderColor);
+    meshLight->SetPosition({ 100.0f, 50.0f, 0.0f });
+	meshLight->SetScale({ 0.1f,0.1f,0.1f });
+
+    for (int i = 0; i < 1; i++)
+    {
+		Mesh* mesh = new Mesh();
+		mesh->Create(shaderDiffuse);
+		mesh->SetLightColor({ 1.0f, 1.0f, 1.0f });
+		mesh->SetLightPosition(meshLight->GetPosition());
+		mesh->SetCameraPosition(camera->GetPosition());
+		mesh->SetScale({ 0.15f, 0.15f, 0.15f });
+        mesh->SetPosition({ glm::linearRand(-100.0f,100.0f), glm::linearRand(-100.0f, 100.0f), glm::linearRand(-100.0f, 100.0f) });;
+		meshes.push_back(mesh);
+	}
+
+    /*OpenGL::ToolWindow^ toolWindow = gcnew OpenGL::ToolWindow();
+    toolWindow->Show(); */
 
     GLFWwindow* window = WindowController::GetInstance().GetWindow();
-    lastTime = glfwGetTime();
+
 
     do
     {
-        double currentTime = glfwGetTime();
-        float deltaTime = float(currentTime - lastTime);
-        lastTime = currentTime;
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::vec3 lightColor(
-            OpenGL::ToolWindow::LightR,
-            OpenGL::ToolWindow::LightG,
-            OpenGL::ToolWindow::LightB
-        );
+		meshLight->Render(camera->GetProjection() * camera->GetView());
 
-        glm::vec3 earthPos(
-            OpenGL::ToolWindow::Position_X,
-            OpenGL::ToolWindow::Position_Y,
-            OpenGL::ToolWindow::Position_Z
-        );
+        for(auto& mesh : meshes)
+        {
+            mesh->SetRotation(mesh->GetRotation() + glm::vec3(0.0f, 0.005f, 0.0f));
+            mesh->Render(camera->GetProjection() * camera->GetView());
+		}   
 
-        float rotationRate = OpenGL::ToolWindow::Rotation_Rate;
-
-        sun->SetLightColor(lightColor);
-        sun->SetRotationRate(rotationRate);
-
-		earth->SetPosition(earthPos);
-        earth->SetLightPosition(sun->GetPosition());
-        earth->SetLightColor(lightColor);
-        earth->SetRotationRate(rotationRate);
-
-        moon->SetLightPosition(sun->GetPosition());
-        moon->SetLightColor(lightColor);
-        moon->SetRotationRate(rotationRate);
-
-        sun->Update(deltaTime);
-        earth->Update(deltaTime);
-        moon->Update(deltaTime);
-
-        glm::mat4 pv = camera->GetProjection() * camera->GetView();
-        sun->Render(pv);
-
-        earth->SetParent(sun->GetWorld());
-        earth->Render(pv);
-
-        moon->SetParent(earth->GetWorld());
-        moon->Render(pv);
+        lastTime = glfwGetTime();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -126,9 +68,11 @@ void GameController::RunGame()
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
         glfwWindowShouldClose(window) == 0);
 
-    delete sun;
-    delete earth;
-    delete moon;
+    for(auto& mesh : meshes)
+    {
+        delete mesh;
+	}
+    delete meshLight;
     delete shaderColor;
     delete shaderDiffuse;
     delete camera;

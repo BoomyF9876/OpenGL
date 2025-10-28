@@ -20,8 +20,10 @@
 #include <GL/glew.h> //Include GLEW
 #include <GLFW/glfw3.h> //Include GLFW
 #include <glm/glm.hpp> //Include GLM
-#include<glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <list>
+#include <glm/ext.hpp>
 #include "Resolution.h"
 #include "json.hpp"
 

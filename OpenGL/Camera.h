@@ -11,11 +11,13 @@ public:
 
     void LookAt(const glm::vec3& _position, const glm::vec3& _lookAt, const glm::vec3& _up);
 
-    inline glm::mat4 GetProjection() const { return projection; }
-    inline glm::mat4 GetView() const { return view; }
+    glm::mat4 GetProjection() const { return projection; }
+    glm::mat4 GetView() const { return view; }
+    glm::vec3 GetPosition() { return position; }
 
 private:
     glm::mat4 projection;
     glm::mat4 view;
+    glm::vec3 position;
 };
 #endif // !_CAMERA_H_

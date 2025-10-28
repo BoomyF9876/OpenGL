@@ -15,9 +15,6 @@ void Shader::LoadAttributes()
 	attrColor = glGetAttribLocation(programID, "colors");
 	attrWVP = glGetUniformLocation(programID, "WVP");//Get a handle for WVP
 	attrTexCoords = glGetAttribLocation(programID, "texCoords");
-	attrTexSampler1 = glGetUniformLocation(programID, "texSampler1");
-	attrTexSampler2 = glGetUniformLocation(programID, "texSampler2");
-	attrTexScroll = glGetAttribLocation(programID, "texScroll");
 	attrNormals = glGetAttribLocation(programID, "normals");
 }
 
@@ -76,6 +73,26 @@ void Shader::LoadShaders(const char* _vertexFilePath, const char* _fragmentFileP
 {
 	CreateShaderProgram(_vertexFilePath, _fragmentFilePath);
 	LoadAttributes();
+}
+
+void Shader::SetFloat(const char* _name, float _value)
+{
+	GLint loc = glGetUniformLocation(programID, _name);
+	if (loc != -1)
+	{
+		glUniform1f(loc, _value);
+	}
+}
+
+void Shader::SetTextureSampler(const char* _name, GLuint _texUint, int _texUintId, int _value)
+{
+	GLint loc = glGetUniformLocation(programID, _name);
+	if (loc != -1)
+	{
+		glActiveTexture(_texUint);
+		glBindTexture(GL_TEXTURE_2D, _value);
+		glUniform1i(loc, _texUintId);
+	}
 }
 
 GLuint Shader::LoadShaderFile(const char* _filePath, GLenum _type)

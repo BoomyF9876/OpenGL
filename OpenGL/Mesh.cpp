@@ -4,7 +4,8 @@ Mesh::~Mesh()
 {
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &indexBuffer);
-	delete texture1;
+	delete diffuseTexture;
+	delete specularTexture;
 }
 void Mesh::BindAttributes()
 {
@@ -47,9 +48,9 @@ void Mesh::BindAttributes()
 #pragma endregion
 
 #pragma region Set Texture 0
-	glActiveTexture(GL_TEXTURE0);
+	/*glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture1->GetTexture());
-	glUniform1i(shader->GetTexSampler1(), 0);
+	glUniform1i(shader->GetTexSampler1(), 0);*/
 #pragma endregion
 
 #pragma region Set Texture 1
@@ -59,6 +60,60 @@ void Mesh::BindAttributes()
 #pragma endregion
 }
 
+void Mesh::Create(Shader* _shader)
+{
+	shader = _shader;
+	diffuseTexture = new Texture();
+	diffuseTexture->LoadTexture("../Assets/Textures/MetalFrameWood.jpg");
+
+	specularTexture = new Texture();
+	specularTexture->LoadTexture("../Assets/Textures/MetalFrame.jpg");
+
+	vertexData = {/* Position */ /* Normals */ /* Texture
+Coords */
+-50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+-50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+-50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+-50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+-50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+-50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+-50.0f, 50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+-50.0f, 50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+-50.0f, -50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+-50.0f, -50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+-50.0f, -50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+-50.0f, 50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+50.0f, 50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+50.0f, 50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+50.0f, -50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+50.0f, -50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+50.0f, -50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+50.0f, 50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+-50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+-50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+-50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+-50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+-50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+-50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+	};
+
+	glGenBuffers(1, &vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+
+}
 
 void Mesh::CalculateTransform()
 {
@@ -67,86 +122,25 @@ void Mesh::CalculateTransform()
 	world = glm::rotate(world, rotation.y, glm::vec3(0, 1, 0));
 	world = glm::rotate(world, rotation.z, glm::vec3(0, 0, 1));
 	world = glm::scale(world, scale);
-	world = parent * world;
 }
 
 void Mesh::SetShaderVariables(glm::mat4 _pv)
 {
 	shader->SetMat4("World", world);
-	shader->SetVec3("LightPosition", lightposition);
-	shader->SetVec3("LightColor", lightcolor);
 	shader->SetMat4("WVP", _pv * world);
-	shader->SetVec3("AmbientColor", ambientColor);
-	shader->SetVec3("DiffuseColor", diffuseColor);
+	shader->SetVec3("CameraPosition", cameraPosition);
+
+	shader->SetVec3("light.position", lightposition);
+	shader->SetVec3("light.color", lightcolor);
+	shader->SetVec3("light.ambientColor", { 0.1f, 0.1f, 0.1f });
+	shader->SetVec3("light.diffuseColor", { 1.0f, 1.01f, 1.0f });
+	shader->SetVec3("light.specularColor", { 3.0f, 3.0f, 3.0f });
+
+	shader->SetFloat("material.specularStrength", 8);
+	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, diffuseTexture->GetTexture());
+	shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, specularTexture->GetTexture());
+
 }
-
-void Mesh::LoadFromJSON(const char* jsonPath, Shader* _shader)
-{
-	shader = _shader;
-
-	json::JSON root = LoadJSON(jsonPath);
-	vertexData.clear();
-	if (root.hasKey("VertexData")) {
-		json::JSON arr = root.at("VertexData");
-		for (size_t i = 0; i < arr.size(); ++i)
-			vertexData.push_back(static_cast<float>(arr[i].ToFloat()));
-	}
-
-	indexData.clear();
-	if (root.hasKey("IndexData")) {
-		json::JSON arr = root.at("IndexData");
-		for (size_t i = 0; i < arr.size(); ++i)
-			indexData.push_back(static_cast<GLuint>(arr[i].ToInt()));
-	}
-
-	
-	if (root.hasKey("LightColor")) {
-		auto c = root.at("LightColor");
-		lightcolor = { (float)c["r"].ToFloat(), (float)c["g"].ToFloat(), (float)c["b"].ToFloat() };
-		int i = 1;
-	}
-	if (root.hasKey("DiffuseColor")) {
-		auto c = root.at("DiffuseColor");
-		diffuseColor = { (float)c["r"].ToFloat(), (float)c["g"].ToFloat(), (float)c["b"].ToFloat() };
-	}
-	if (root.hasKey("AmbientLight")) {
-		auto c = root.at("AmbientLight");
-		ambientColor = { (float)c["r"].ToFloat(), (float)c["g"].ToFloat(), (float)c["b"].ToFloat() };
-	}
-
-	if (root.hasKey("Position")) {
-		auto p = root.at("Position");
-		position = { (float)p["x"].ToFloat(), (float)p["y"].ToFloat(), (float)p["z"].ToFloat() };
-	}
-	if (root.hasKey("Scale")) {
-		auto s = root.at("Scale");
-		scale = { (float)s["x"].ToFloat(), (float)s["y"].ToFloat(), (float)s["z"].ToFloat() };
-	}
-	if (root.hasKey("RotationRate"))
-		rotationRate = (float)root.at("RotationRate").ToFloat();
-		//rotation = glm::vec3(0, rotationRate, 0);
-
-	texture1 = new Texture();
-	if (root.hasKey("DiffuseTexture")) {
-		std::string texPath = root.at("DiffuseTexture").ToString();
-		texture1->LoadTexture(texPath.c_str());
-	}
-	else {
-		texture1->LoadTexture("../Assets/Textures/Pattern.png");
-	}
-
-
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
-
-	if (!indexData.empty()) {
-		glGenBuffers(1, &indexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size() * sizeof(GLuint), indexData.data(), GL_STATIC_DRAW);
-	}
-}
-
 
 void Mesh::Render(glm::mat4 _pv)
 {
@@ -166,9 +160,4 @@ void Mesh::Render(glm::mat4 _pv)
 	glDisableVertexAttribArray(shader->GetAttrVertices());
 	glDisableVertexAttribArray(shader->GetAttrNormals());
 	glDisableVertexAttribArray(shader->GetAttrTexCoords());
-}
-
-void Mesh::Update(float deltaTime)
-{
-	rotation.y += rotationRate;
 }
