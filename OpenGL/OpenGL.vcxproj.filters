@@ -68,6 +68,7 @@
     <None Include="Color.vertexshader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Scene.json" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ToolWindow.h">

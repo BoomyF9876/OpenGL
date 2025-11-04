@@ -119,9 +119,8 @@
 
 int main(void)
 {
-	GameController* gameController = new GameController();
-	gameController->Initialize();
-	gameController->RunGame();
+	GameController::GetInstance().Initialize();
+	GameController::GetInstance().RunGame();
 	//OpenGL::ToolWindow^ toolWindow = gcnew OpenGL::ToolWindow();
 	//toolWindow->Show();
 

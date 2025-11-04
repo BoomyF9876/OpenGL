@@ -11,6 +11,7 @@ void Mesh::BindAttributes()
 {
 	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	#pragma region Set Vertices
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glEnableVertexAttribArray(shader->GetAttrVertices());
 	glVertexAttribPointer(
 		shader->GetAttrVertices(), // The attribute we want to configure
@@ -60,54 +61,104 @@ void Mesh::BindAttributes()
 #pragma endregion
 }
 
-void Mesh::Create(Shader* _shader)
+void Mesh::LoadVec3(json::JSON& jsonData, const char* name, glm::vec3& vec)
 {
-	shader = _shader;
+
+	json::JSON& data = jsonData[name];
+	if (data.hasKey("x")) vec.x = data["x"].ToFloat();
+	if (data.hasKey("y")) vec.y = data["y"].ToFloat();
+	if (data.hasKey("z")) vec.z = data["z"].ToFloat();
+
+	if (data.hasKey("r")) vec.x = data["r"].ToFloat();
+	if (data.hasKey("g")) vec.y = data["g"].ToFloat();
+	if (data.hasKey("b")) vec.z = data["b"].ToFloat();
+}
+
+void Mesh::Create(json::JSON& jsonData)
+{
+	M_ASSERT(jsonData.hasKey("Shader"), "Shader is required.");
+	shader = GameController::GetInstance().GetShader(jsonData["Shader"].ToString().c_str());
+
+	if (jsonData.hasKey("Position")) LoadVec3(jsonData, "Position", position);
+	if (jsonData.hasKey("Rotation")) LoadVec3(jsonData, "Rotation", rotation);
+	if (jsonData.hasKey("Scale")) LoadVec3(jsonData, "Scale", scale);
+
+	if (jsonData.hasKey("LightDirection"))
+	{
+		LoadVec3(jsonData, "LightDirection", lightDirection);
+		lightDirection = glm::normalize(lightDirection);
+	}
+	if (jsonData.hasKey("LightColor")) LoadVec3(jsonData, "LightColor", lightColor);
+	if (jsonData.hasKey("AmbientColor")) LoadVec3(jsonData, "AmbientColor", ambientColor);
+	if (jsonData.hasKey("SpecularColor")) LoadVec3(jsonData, "SpecularColor", specularColor);
+	if (jsonData.hasKey("SpecularStrength")) specularStrength = jsonData["SpecularStrength"].ToFloat();
+
+	if (jsonData.hasKey("PointLightconstant")) pointLightconstant = jsonData["PointLightconstant"].ToFloat();
+	if (jsonData.hasKey("PointLightlinear")) pointLightlinear = jsonData["PointLightlinear"].ToFloat();
+	if (jsonData.hasKey("PointLightquadratic")) pointLightquadratic = jsonData["PointLightquadratic"].ToFloat();
+
+	if (jsonData.hasKey("SpotLightconeAngle")) spotLightconeAngle = jsonData["SpotLightconeAngle"].ToFloat();
+	if (jsonData.hasKey("SpotLightfalloff")) spotLightfalloff = jsonData["SpotLightfalloff"].ToFloat();
+
+	diffuseTexture = new Texture();
+	if (jsonData.hasKey("DiffuseTexture"))
+	{
+		diffuseTexture->LoadTexture(jsonData["DiffuseTexture"].ToString().c_str());
+	}
+	specularTexture = new Texture();
+	if (jsonData.hasKey("SpecularTexture"))
+	{
+		specularTexture->LoadTexture(jsonData["SpecularTexture"].ToString().c_str());
+	}
+
+	/*shader = _shader;
 	diffuseTexture = new Texture();
 	diffuseTexture->LoadTexture("../Assets/Textures/MetalFrameWood.jpg");
 
 	specularTexture = new Texture();
-	specularTexture->LoadTexture("../Assets/Textures/MetalFrame.jpg");
+	specularTexture->LoadTexture("../Assets/Textures/MetalFrame.jpg");*/
 
-	vertexData = {/* Position */ /* Normals */ /* Texture
-Coords */
--50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
--50.0f, 50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
--50.0f, -50.0f, -50.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
--50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
--50.0f, 50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
--50.0f, -50.0f, 50.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
--50.0f, 50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
--50.0f, 50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
--50.0f, -50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
--50.0f, -50.0f, -50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
--50.0f, -50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
--50.0f, 50.0f, 50.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-50.0f, 50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-50.0f, 50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-50.0f, -50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-50.0f, -50.0f, -50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-50.0f, -50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-50.0f, 50.0f, 50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
--50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
--50.0f, -50.0f, 50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
--50.0f, -50.0f, -50.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
--50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
--50.0f, 50.0f, 50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
--50.0f, 50.0f, -50.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+	vertexData = {
+		/* Position */ /* Normals */ /* Texture Coords */
+		-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+		-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		-1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+
+		1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		-1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
 	};
+
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -124,29 +175,58 @@ void Mesh::CalculateTransform()
 	world = glm::scale(world, scale);
 }
 
-void Mesh::SetShaderVariables(glm::mat4 _pv)
+std::string Mesh::Concat(const std::string& _s1, int _index, const std::string& _s2)
+{
+	std::string index = std::to_string(_index);
+	return (_s1 + index + _s2);
+}
+
+void Mesh::SetShaderVariables(glm::mat4 _pv, const std::list<Mesh*>& _lights)
 {
 	shader->SetMat4("World", world);
 	shader->SetMat4("WVP", _pv * world);
 	shader->SetVec3("CameraPosition", cameraPosition);
 
-	shader->SetVec3("light.position", lightposition);
-	shader->SetVec3("light.color", lightcolor);
+	/*shader->SetVec3("light.position", lightposition);
+	shader->SetVec3("light.direction", glm::normalize(glm::vec3({0,0,0})-lightposition));
+	shader->SetFloat("light.constant", 1.0f);
+	shader->SetFloat("light.linear", 0.007f);
+	shader->SetFloat("light.quadratic", 0.0002f);
 	shader->SetVec3("light.ambientColor", { 0.1f, 0.1f, 0.1f });
-	shader->SetVec3("light.diffuseColor", { 1.0f, 1.01f, 1.0f });
+	shader->SetVec3("light.diffuseColor", lightColor);
 	shader->SetVec3("light.specularColor", { 3.0f, 3.0f, 3.0f });
+	shader->SetFloat("light.coneAngle", glm::radians(15.0f));
+	shader->SetFloat("light.falloff", 100);*/
+	M_ASSERT(_lights.size() <= 4, "Diffuse Shader only supports 4 lights");
+	shader->SetInt("numLights", (int)_lights.size());
+	int i = 0;
+	for (auto& light : _lights) {
+		shader->SetVec3(Concat("light[", i, "].position").c_str(), light->GetPosition());
+		shader->SetVec3(Concat("light[", i, "].direction").c_str(), light->GetLightDirection());
 
-	shader->SetFloat("material.specularStrength", 8);
+		shader->SetVec3(Concat("light[", i, "].ambientColor").c_str(), light->GetAmbientColor());
+		shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), light->GetLightColor());
+		shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), light->GetSpecularColor());
+
+		shader->SetFloat(Concat("light[", i, "].constant").c_str(), light->GetPointLightConstant());
+		shader->SetFloat(Concat("light[", i, "].linear").c_str(), light->GetPointLightLinear());
+		shader->SetFloat(Concat("light[", i, "].quadratic").c_str(), light->GetPointLightQuadratic());
+
+		shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(light->GetConeAngle()));
+		shader->SetFloat(Concat("light[", i, "].falloff").c_str(), light->GetFalloff());
+		i++;
+	}
+	shader->SetFloat("material.specularStrength", specularStrength);
 	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, diffuseTexture->GetTexture());
 	shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, specularTexture->GetTexture());
 
 }
 
-void Mesh::Render(glm::mat4 _pv)
+void Mesh::Render(glm::mat4 _pv, const std::list<Mesh*>& _lights)
 {
 	glUseProgram(shader->GetProgramID());
 	CalculateTransform();
-	SetShaderVariables(_pv);
+	SetShaderVariables(_pv, _lights);
 	BindAttributes();
 
 	if (!indexData.empty()) {

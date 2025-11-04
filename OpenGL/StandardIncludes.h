@@ -7,6 +7,7 @@
 #include <cassert>
 #include <string>
 #include <fstream>
+#include <map>
 
 //Window specific includes and defines
 #ifdef _WIN32

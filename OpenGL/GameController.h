@@ -7,21 +7,37 @@
 
 class GameController
 {
-private:
-    Camera* camera = nullptr;
-
-    // Shaders
-    Shader* shaderColor = nullptr;
-    Shader* shaderDiffuse = nullptr;
-
-	Mesh* meshLight = nullptr;
-    std::list<Mesh*> meshes;
-
-    double lastTime = 0.0;
-
 public:
+    static GameController& GetInstance()
+    {
+        static GameController instance;
+        return instance;
+	}
+
     void Initialize();
     void RunGame();
-    
-    float GetDeltaTime() { return float(glfwGetTime() - lastTime); }
+
+    Shader* GetShader(const char* shaderName)
+    {
+		auto itr = shaders.find(shaderName);
+        assert(itr != shaders.end());
+		return itr->second;
+    }
+
+private:
+    void Load();
+
+private:
+    std::map<std::string, Shader*> shaders;
+
+    std::list<Mesh*> meshes;
+	std::list<Mesh*> lights;
+
+	Camera* camera = nullptr;
+
+private:
+	inline explicit GameController() = default;
+	inline ~GameController() = default;
+	inline explicit GameController(const GameController&) = delete;
+	inline GameController& operator=(const GameController&) = delete;
 };

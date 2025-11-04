@@ -75,6 +75,15 @@ void Shader::LoadShaders(const char* _vertexFilePath, const char* _fragmentFileP
 	LoadAttributes();
 }
 
+void Shader::SetInt(const char* _name, int _value)
+{
+	GLint loc = glGetUniformLocation(programID, _name);
+	if (loc != -1)
+	{
+		glUniform1i(loc, _value);
+	}
+}
+
 void Shader::SetFloat(const char* _name, float _value)
 {
 	GLint loc = glGetUniformLocation(programID, _name);
