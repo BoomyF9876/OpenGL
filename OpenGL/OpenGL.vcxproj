@@ -159,6 +159,7 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\PROG50016-Resources-Game-Engine-Core-Files\TypeClass.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameController.h" />
     <ClInclude Include="json.hpp" />

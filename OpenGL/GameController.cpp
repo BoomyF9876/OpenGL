@@ -1,6 +1,7 @@
 #include "GameController.h"
 #include "WindowController.h"
 #include "ToolWindow.h"
+#include "Mesh.h"
 #include <fstream>
 
 
@@ -11,7 +12,6 @@ void GameController::Initialize()
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glEnable(GL_DEPTH_TEST);
     srand(time(0));
-
     Load();
 
     /*camera = new Camera(WindowController::GetInstance().GetResolution());
@@ -48,7 +48,7 @@ void GameController::Load()
     if (document.hasKey("Camera"))
     {
         json::JSON& jsonCamera = document["Camera"];
-        if (document.hasKey("Position"))
+        if (jsonCamera.hasKey("Position"))
         {
             json::JSON& jsonCameraObject = jsonCamera["Position"];
             if (jsonCameraObject.hasKey("x")) CameraPosition.x = jsonCameraObject["x"].ToFloat();

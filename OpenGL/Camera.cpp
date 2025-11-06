@@ -15,4 +15,5 @@ Camera::Camera(Resolution& _resolution, float _fov, float _near, float _far)
 void Camera::LookAt(const glm::vec3& _position, const glm::vec3& _lookAt, const glm::vec3& _up)
 {
     view = glm::lookAt(_position, _lookAt, _up);
+	position = _position;
 }

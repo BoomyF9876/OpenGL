@@ -1,9 +1,10 @@
 #pragma once
 #include "Camera.h"
 #include "Shader.h"
-#include "Mesh.h"
 #include <GLFW/glfw3.h>
 #include "StandardIncludes.h"
+
+class Mesh;
 
 class GameController
 {

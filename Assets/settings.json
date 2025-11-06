@@ -18,7 +18,7 @@
   },
   "Shaders": [
     {
-      "name ": "Color",
+      "name": "Color",
       "vertex": "Color.vertexshader",
       "fragment": "Color.fragmentshader"
     },
