@@ -44,6 +44,7 @@ public:
 	float GetFalloff() { return spotLightfalloff; }
 
 private:
+	void LoadObj(const std::string& _file);
     void SetShaderVariables(glm::mat4 _pv, const std::list<Mesh*>& _lights);
     void BindAttributes();
     std::string Concat(const std::string& _s1, int _index, const std::string& _s2);
@@ -52,7 +53,10 @@ private:
 
 private:
     Shader* shader = nullptr;
+
+    std::string diffuseMap;
     Texture* diffuseTexture = nullptr;
+	std::string specularMap;
     Texture* specularTexture = nullptr;
 
     GLuint vertexBuffer = 0;

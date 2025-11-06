@@ -4,6 +4,7 @@ in vec3 vertices;
 in vec3 normals;
 in vec2 texCoords;
 
+uniform mat4 model;
 uniform vec3 CameraPosition;
 uniform mat4 World;
 uniform mat4 WVP;
