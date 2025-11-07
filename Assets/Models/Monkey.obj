@@ -1,6 +1,6 @@
 # Blender 4.5.4 LTS
 # www.blender.org
-mtllib Suzanne.mtl
+mtllib Monkey.mtl
 o Suzanne
 v 0.437500 0.164062 0.765625
 v -0.437500 0.164062 0.765625
@@ -1456,7 +1456,7 @@ vt 1.000000 1.000000
 vt 0.000000 1.000000
 vt 1.000000 0.000000
 s 0
-usemtl Material.003
+usemtl Material.002
 f 47/1/1 3/2/1 45/3/1
 f 4/1/2 48/2/2 46/3/2
 f 45/1/3 5/2/3 43/3/3

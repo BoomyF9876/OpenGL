@@ -6,5 +6,5 @@ uniform vec3 LightColor; // we set this variable in the OpenGL code.
 
 void main()
 {
-	FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	FragColor = vec4(LightColor.x, LightColor.y, LightColor.z, 1.0f);
 }

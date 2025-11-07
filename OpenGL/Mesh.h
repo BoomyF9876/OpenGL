@@ -7,7 +7,12 @@
 #include "StandardIncludes.h"
 #include "GameController.h"
 
-
+enum LightType {
+    DIRECTIONAL_LIGHT = 1,
+    POINT_LIGHT = 2,
+    SPOT_LIGHT = 3,
+    NONE = 0
+};
 
 class Mesh
 {
@@ -43,6 +48,9 @@ public:
 	float GetConeAngle() { return spotLightconeAngle; }
 	float GetFalloff() { return spotLightfalloff; }
 
+    void SetLightType(LightType type) { lightType = type; }
+    LightType GetLightType() const { return lightType; }
+
 private:
 	void LoadObj(const std::string& _file);
     void SetShaderVariables(glm::mat4 _pv, const std::list<Mesh*>& _lights);
@@ -69,6 +77,7 @@ private:
     glm::vec3 position = { 0.0f, 0.0f, 0.0f };
     glm::vec3 rotation = { 0.0f,0.0f,0.0f };
     glm::vec3 scale = { 1.0f,1.0f, 1.0f };
+    LightType lightType = NONE;
 
     glm::vec3 lightposition = glm::vec3(0.0f);
     glm::vec3 cameraPosition = glm::vec3(0.0f);

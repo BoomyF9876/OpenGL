@@ -182,7 +182,7 @@ void GameController::RunGame()
 
         for (auto& mesh : meshes)
         {
-            //mesh->SetRotation(mesh->GetRotation() + glm::vec3(0.0f, 0.005f, 0.0f));
+            mesh->SetRotation(mesh->GetRotation() + glm::vec3(0.0f, 0.005f, 0.0f));
             mesh->Render(camera->GetProjection() * camera->GetView(), lights);
 		}   
 

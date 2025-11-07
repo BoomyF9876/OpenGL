@@ -122,6 +122,24 @@ void Mesh::Create(json::JSON& jsonData)
 	if (jsonData.hasKey("Rotation")) LoadVec3(jsonData, "Rotation", rotation);
 	if (jsonData.hasKey("Scale")) LoadVec3(jsonData, "Scale", scale);
 
+	if (jsonData.hasKey("Type"))
+	{
+		std::string typeStr = jsonData["Type"].ToString();
+		if (typeStr == "Directional") {
+			lightType = DIRECTIONAL_LIGHT;
+		}
+		else if (typeStr == "Point") {
+			lightType = POINT_LIGHT;
+		}
+		else if (typeStr == "Spot") {
+			lightType = SPOT_LIGHT;
+		}
+		else {
+			lightType = NONE;
+			std::cerr << "Warning: Unknown light type: " << typeStr << std::endl;
+		}
+	}
+
 	if (jsonData.hasKey("LightDirection"))
 	{
 		LoadVec3(jsonData, "LightDirection", lightDirection);
@@ -160,6 +178,7 @@ void Mesh::Create(json::JSON& jsonData)
 	specularTexture = new Texture();
 	if (specularMap.size() > 0)
 		specularTexture->LoadTexture(specularMap.c_str());
+
 
 	/*shader = _shader;
 	diffuseTexture = new Texture();
@@ -236,7 +255,7 @@ void Mesh::SetShaderVariables(glm::mat4 _pv, const std::list<Mesh*>& _lights)
 	shader->SetMat4("World", world);
 	shader->SetMat4("WVP", _pv * world);
 	shader->SetVec3("CameraPosition", cameraPosition);
-
+	shader->SetVec3("LightColor", lightColor);
 	/*shader->SetVec3("light.position", lightposition);
 	shader->SetVec3("light.direction", glm::normalize(glm::vec3({0,0,0})-lightposition));
 	shader->SetFloat("light.constant", 1.0f);
@@ -251,6 +270,7 @@ void Mesh::SetShaderVariables(glm::mat4 _pv, const std::list<Mesh*>& _lights)
 	shader->SetInt("numLights", (int)_lights.size());
 	int i = 0;
 	for (auto& light : _lights) {
+		shader->SetInt(Concat("light[", i, "].type").c_str(), light->GetLightType());// DIRECTIONAL_LIGHT = 1, POINT_LIGHT = 2, SPOT_LIGHT = 3, NONE = 0
 		shader->SetVec3(Concat("light[", i, "].position").c_str(), light->GetPosition());
 		shader->SetVec3(Concat("light[", i, "].direction").c_str(), light->GetLightDirection());
 
