@@ -136,6 +136,7 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="EngineTime.cpp" />
     <ClCompile Include="GameController.cpp" />
     <ClCompile Include="json.cpp" />
     <ClCompile Include="main.cpp" />
@@ -164,6 +165,7 @@ copy/Y "$(SolutionDir)External\glfw-3.3.4\lib-vc2019\glfw3.dll" "$(TargetDir)"
   <ItemGroup>
     <ClInclude Include="..\..\..\PROG50016-Resources-Game-Engine-Core-Files\TypeClass.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="EngineTime.h" />
     <ClInclude Include="GameController.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Mesh.h" />

@@ -180,7 +180,7 @@
         "z": 1.0
       },
       "SpecularStrength": 8.0,
-      "RotationRate": {
+      "Rotation": {
         "x": 0.0,
         "y": 45.0,
         "z": 0.0
@@ -200,7 +200,7 @@
         "z": 1.0
       },
       "SpecularStrength": 8.0,
-      "RotationRate": {
+      "Rotation": {
         "x": 0.0,
         "y": -90.0,
         "z": 0.0
