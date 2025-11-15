@@ -15,7 +15,10 @@
 #define M_ASSERT(_cond, _msg)\
 	if(!(_cond)){OutputDebugStringA(_msg); std::abort(); glfwTerminate();} 
 #endif
-#define GLM_ENABLE_EXPERIMENTAL
+
+//FreeType headers
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 //Open GL/Helper headers
 #include <GL/glew.h> //Include GLEW
@@ -25,8 +28,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <list>
 #include <glm/ext.hpp>
+
 #include "Resolution.h"
 #include "json.hpp"
+
 
 inline json::JSON LoadJSON(const std::string & filename)
 {

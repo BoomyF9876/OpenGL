@@ -20,6 +20,7 @@ public:
 	GLuint GetTexSampler2() { return attrTexSampler2; }
 	GLuint GetAttrTexScroll() { return attrTexScroll; }
 	GLuint GetAttrNormals() { return attrNormals; }
+	GLuint GetAttrInstanceMatrix() { return attrInstanceMatrix; }
 
 	void SetVec3(const char* _name, glm::vec3 _value);
 	void SetMat4(const char* _name, glm::mat4 _value);
@@ -43,6 +44,7 @@ private:
 	GLuint attrTexSampler2 = 0;
 	GLuint attrTexScroll = 0;
 	GLuint attrNormals = 0;
+	GLuint attrInstanceMatrix = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;

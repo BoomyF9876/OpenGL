@@ -20,7 +20,7 @@ public:
     ~Mesh();
 
     void Create(json::JSON& jsonData);
-    void Render(glm::mat4 _pv, const std::list<Mesh*>& _lights);
+    void Render(glm::mat4 _pv, const std::list<Mesh*>& _lights, int _instanceCount = 0);
     void CalculateTransform();
 
     void SetRotation(glm::vec3 _rotation) { rotation = _rotation; }
@@ -69,9 +69,14 @@ private:
 
     GLuint vertexBuffer = 0;
     GLuint indexBuffer = 0;
+	GLuint instanceBuffer = 0;
 
     std::vector<GLfloat> vertexData;
     std::vector<GLubyte> indexData;
+
+	int instanceCount = 0;
+	bool enableInstancing = false;
+	glm::mat4* instanceData;
 
     glm::mat4 world = glm::mat4(1);
     glm::vec3 position = { 0.0f, 0.0f, 0.0f };

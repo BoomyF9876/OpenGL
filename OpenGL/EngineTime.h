@@ -49,7 +49,7 @@ private:
 	inline explicit Time(Time const&) = delete;
 	inline Time& operator=(Time const&) = delete;
 
-	friend class Engine;
+	friend class GameController;
 };
 
 #endif

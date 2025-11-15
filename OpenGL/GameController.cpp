@@ -2,6 +2,7 @@
 #include "WindowController.h"
 #include "ToolWindow.h"
 #include "Mesh.h"
+#include "EngineTime.h"
 #include <fstream>
 
 
@@ -11,7 +12,13 @@ void GameController::Initialize()
     M_ASSERT(glewInit() == GLEW_OK, "Unable to initialize glew");
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     srand(time(0));
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
     Load();
 
     /*camera = new Camera(WindowController::GetInstance().GetResolution());
@@ -118,7 +125,33 @@ void GameController::Load()
 			meshes.push_back(mesh);
         }
     }
-	#pragma endregion
+
+    #pragma region Fonts
+    if (document.hasKey("Fonts"))
+        {
+            json::JSON& fontsJSON = document["Fonts"];
+            for (auto& fontJSON : fontsJSON.ArrayRange())
+            {
+                M_ASSERT(fontJSON.hasKey("Name"), "Font requires a name");
+                std::string fontName = fontJSON["Name"].ToString();
+    
+                M_ASSERT(fontJSON.hasKey("Font"), "Font requires a Font node");
+
+                Font* font = new Font();
+                font->Create(fontJSON["Font"]);
+                fonts.emplace(fontName, font);
+            }
+        }
+    #pragma endregion
+
+    #pragma region TextController
+        if (document.hasKey("TextController"))
+        {   
+            textController = new TextController();
+            textController->Create(document["TextController"]);
+        }
+    #pragma endregion
+#pragma endregion
 }
 
 void GameController::RunGame()
@@ -170,10 +203,34 @@ void GameController::RunGame()
 
     GLFWwindow* window = WindowController::GetInstance().GetWindow();
 
+	Time::Instance().Initialize();
+
+    int currentInstanceCount = 100;
+    bool upKeyPressed = false;
+    bool downKeyPressed = false;
 
     do
     {
+		Time::Instance().Update();
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        {
+            if (currentInstanceCount < 1000)
+            {
+                currentInstanceCount++;
+            }
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        {
+            if (currentInstanceCount > 1)
+            {
+                currentInstanceCount--;
+            }
+        }
+
 
         for (auto& light : lights)
         {
@@ -182,11 +239,16 @@ void GameController::RunGame()
 
         for (auto& mesh : meshes)
         {
-            mesh->SetRotation(mesh->GetRotation() + glm::vec3(0.0f, 0.005f, 0.0f));
-            mesh->Render(camera->GetProjection() * camera->GetView(), lights);
+            float rotationSpeed = 1.0f;
+            mesh->SetRotation(mesh->GetRotation() + glm::vec3(0.0f, rotationSpeed * Time::Instance().DeltaTime(), 0.0f));
+            mesh->Render(camera->GetProjection() * camera->GetView(), lights, currentInstanceCount);
 		}   
 
-        //lastTime = glfwGetTime();
+        std::string instanceText = "Instances: " + std::to_string(currentInstanceCount);
+        textController->RenderText(instanceText, 20, 750, 0.5f, { 1.0f, 1.0f, 1.0f });
+
+        std::string fpsText = "FPS: " + std::to_string(Time::Instance().FPS());
+        textController->RenderText(fpsText, 20, 100, 0.5f, {1.0f, 1.0f, 0.0f});
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -206,5 +268,13 @@ void GameController::RunGame()
     {
 		delete shader.second;
     }
+    for (auto& font : fonts)
+	{
+		delete font.second;
+	}
+    if (textController != nullptr)
+    {
+        delete textController;
+	}
     delete camera;
 }

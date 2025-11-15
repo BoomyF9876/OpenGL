@@ -16,6 +16,7 @@ void Shader::LoadAttributes()
 	attrWVP = glGetUniformLocation(programID, "WVP");//Get a handle for WVP
 	attrTexCoords = glGetAttribLocation(programID, "texCoords");
 	attrNormals = glGetAttribLocation(programID, "normals");
+	attrInstanceMatrix = glGetAttribLocation(programID, "instanceMatrix");
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)
