@@ -18,6 +18,8 @@ public:
 	GLuint GetAttrTexCoords() { return attrTexCoords; }
 	GLuint GetTexSampler1() { return attrTexSampler1; }
 	GLuint GetTexSampler2() { return attrTexSampler2; }
+	GLuint GetAttrTangents() { return attrTangents; }
+	GLuint GetAttrBitangents() { return attrBitangents; }
 	GLuint GetAttrTexScroll() { return attrTexScroll; }
 	GLuint GetAttrNormals() { return attrNormals; }
 	GLuint GetAttrInstanceMatrix() { return attrInstanceMatrix; }
@@ -45,6 +47,8 @@ private:
 	GLuint attrTexScroll = 0;
 	GLuint attrNormals = 0;
 	GLuint attrInstanceMatrix = 0;
+	GLuint attrTangents = 0;
+	GLuint attrBitangents = 0;
 
 	GLint result = GL_FALSE;
 	int infoLogLength = 0;

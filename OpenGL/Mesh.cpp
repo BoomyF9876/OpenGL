@@ -15,6 +15,17 @@ Mesh::~Mesh()
 		delete instanceData;
 	}
 }
+
+std::string Mesh::RemoveFolder(std::string& _map)
+{
+	const size_t last_slash_idx = _map.find_last_of("\\/");
+	if (std::string::npos != last_slash_idx)
+	{
+		_map.erase(0, last_slash_idx + 1);
+	}
+	return _map;
+}
+
 void Mesh::BindAttributes()
 {
 	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -26,7 +37,7 @@ void Mesh::BindAttributes()
 		3,                          // size
 		GL_FLOAT,                   // type
 		GL_FALSE,                   // normalized?
-		8 * sizeof(float),                          // stride
+		vertexStride * sizeof(float),                          // stride
 		(void*)0                    // array buffer offset
 	);
 	
@@ -39,7 +50,7 @@ void Mesh::BindAttributes()
 		3,                          // size
 		GL_FLOAT,                   // type
 		GL_FALSE,                   // normalized?
-		8 * sizeof(float),                          // stride
+		vertexStride * sizeof(float),                          // stride
 		(void*)(3 * sizeof(float))                    // array buffer offset
 	);
 #pragma endregion
@@ -51,9 +62,26 @@ void Mesh::BindAttributes()
 		2,                          // size
 		GL_FLOAT,                   // type
 		GL_FALSE,                   // normalized?
-		8 * sizeof(float),                          // stride
+		vertexStride * sizeof(float),                          // stride
 		(void*)(6 * sizeof(float))                    // array buffer offset
 	);
+#pragma endregion
+
+#pragma region Set Normal Map
+	if (enableNormalMaps)
+	{
+		glEnableVertexAttribArray(shader->GetAttrTangents());
+		glVertexAttribPointer(shader->GetAttrTangents(), // The attribute we want to configure
+			3, GL_FLOAT, GL_FALSE,              // size, type, normalized?,
+			vertexStride * sizeof(float), // stride floats per vertex definition
+			(void*)(8 * sizeof(float))); // array buffer offset
+
+		glEnableVertexAttribArray(shader->GetAttrBitangents());
+		glVertexAttribPointer(shader->GetAttrBitangents(), // The attribute we want to configure
+			3, GL_FLOAT, GL_FALSE,              // size, type, normalized?,
+			vertexStride * sizeof(float), // stride floats per vertex definition
+			(void*)(11 * sizeof(float))); // array buffer offset
+	}
 #pragma endregion
 
 #pragma region Instancing Data
@@ -131,29 +159,61 @@ void Mesh::LoadObj(const std::string& _filename)
 	{
 		for (auto& vertex : currentMesh.Vertices)
 		{
-			vertexData.push_back(vertex.Position.X);
-			vertexData.push_back(vertex.Position.Y);
-			vertexData.push_back(vertex.Position.Z);
-			vertexData.push_back(vertex.Normal.X);
-			vertexData.push_back(vertex.Normal.Y);
-			vertexData.push_back(vertex.Normal.Z);
-			vertexData.push_back(vertex.TextureCoordinate.X);
-			vertexData.push_back(vertex.TextureCoordinate.Y);
+			std::vector<objl::Vector3> tangents;
+			std::vector<objl::Vector3> bitangents;
+			std::vector<objl::Vertex> triangle;
+			objl::Vector3 tangent;
+			objl::Vector3 bitangent;
+			for (unsigned int j = 0; j < currentMesh.Vertices.size(); j += 3)
+			{
+				triangle.clear();
+				triangle.push_back(currentMesh.Vertices[j]);
+				triangle.push_back(currentMesh.Vertices[j + 1]);
+				triangle.push_back(currentMesh.Vertices[j + 2]);
+				CalculateTangents(triangle, tangent, bitangent);
+				tangents.push_back(tangent);
+				bitangents.push_back(bitangent);
+			}
+
+			for (unsigned int j = 0; j < currentMesh.Vertices.size(); j++)
+			{
+				vertexData.push_back(currentMesh.Vertices[j].Position.X);
+				vertexData.push_back(currentMesh.Vertices[j].Position.Y);
+				vertexData.push_back(currentMesh.Vertices[j].Position.Z);
+				vertexData.push_back(currentMesh.Vertices[j].Normal.X);
+				vertexData.push_back(currentMesh.Vertices[j].Normal.Y);
+				vertexData.push_back(currentMesh.Vertices[j].Normal.Z);
+				vertexData.push_back(currentMesh.Vertices[j].TextureCoordinate.X);
+				vertexData.push_back(currentMesh.Vertices[j].TextureCoordinate.Y);
+
+				if (loader.LoadedMaterials[0].map_bump != "")
+				{
+					int index = j / 3;
+					vertexData.push_back(tangents[index].X);
+					vertexData.push_back(tangents[index].Y);
+					vertexData.push_back(tangents[index].Z);
+					vertexData.push_back(bitangents[index].X);
+					vertexData.push_back(bitangents[index].Y);
+					vertexData.push_back(bitangents[index].Z);
+				}
+			}
 		}
 	}
 
-	std::string mapKd = loader.LoadedMaterials[0].map_Kd;
-	const size_t lastSlashKdIdx = mapKd.find_last_of("\\/");
-	if (std::string::npos != lastSlashKdIdx)
+	if (loader.LoadedMaterials[0].map_Kd != "")
 	{
-		diffuseMap = "../Assets/Textures/" + mapKd.erase(0, lastSlashKdIdx + 1);
+		diffuseMap = "../Assets/Textures/" + RemoveFolder(loader.LoadedMaterials[0].map_Kd);
 	}
 
-	std::string mapKs = loader.LoadedMaterials[0].map_Ks;
-	const size_t lastSlashKsIdx = mapKs.find_last_of("\\/");
-	if (std::string::npos != lastSlashKsIdx)
+	if (loader.LoadedMaterials[0].map_Ks != "")
 	{
-		specularMap = "../Assets/Textures/" + mapKs.erase(0, lastSlashKsIdx + 1);
+		specularMap = "../Assets/Textures/" + RemoveFolder(loader.LoadedMaterials[0].map_Ks);
+	}
+
+	if (loader.LoadedMaterials[0].map_bump != "")
+	{
+		enableNormalMaps = true;
+		normalMap = "../Assets/Textures/" + RemoveFolder(loader.LoadedMaterials[0].map_bump);
 	}
 }
 
@@ -163,7 +223,7 @@ void Mesh::Create(json::JSON& jsonData)
 	shader = GameController::GetInstance().GetShader(jsonData["Shader"].ToString().c_str());
 
 	if (jsonData.hasKey("Position")) LoadVec3(jsonData, "Position", position);
-	if (jsonData.hasKey("Rotation")) LoadVec3(jsonData, "Rotation", rotation);
+	if (jsonData.hasKey("RotationRate")) rotationRate = jsonData["RotationRate"].ToFloat();
 	if (jsonData.hasKey("Scale")) LoadVec3(jsonData, "Scale", scale);
 
 	if (jsonData.hasKey("Type"))
@@ -216,13 +276,13 @@ void Mesh::Create(json::JSON& jsonData)
 	LoadObj(jsonData["Model"].ToString());
 
 	diffuseTexture = new Texture();
-	if (diffuseMap.size() > 0)
-		diffuseTexture->LoadTexture(diffuseMap.c_str());
+	if (diffuseMap.size() > 0) diffuseTexture->LoadTexture(diffuseMap.c_str());
 
 	specularTexture = new Texture();
-	if (specularMap.size() > 0)
-		specularTexture->LoadTexture(specularMap.c_str());
+	if (specularMap.size() > 0) specularTexture->LoadTexture(specularMap.c_str());
 
+	normalTexture = new Texture();
+	if (normalMap.size() > 0) normalTexture->LoadTexture(normalMap.c_str());
 
 	/*shader = _shader;
 	diffuseTexture = new Texture();
@@ -272,6 +332,10 @@ void Mesh::Create(json::JSON& jsonData)
 	//	-1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
 	//};
 
+	if (enableNormalMaps)
+	{
+		vertexStride += 6;
+	}
 
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -316,25 +380,45 @@ std::string Mesh::Concat(const std::string& _s1, int _index, const std::string& 
 	return (_s1 + index + _s2);
 }
 
+void Mesh::CalculateTangents(std::vector<objl::Vertex> _vertices, objl::Vector3& _tangent, objl::Vector3& _bitangent)
+{
+	// calculate tangent/bitangent vectors of both triangles
+	objl::Vector3 edge1 = _vertices[1].Position - _vertices[0].Position;
+	objl::Vector3 edge2 = _vertices[2].Position - _vertices[0].Position;
+	objl::Vector2 deltaUV1 = _vertices[1].TextureCoordinate - _vertices[0].TextureCoordinate;
+	objl::Vector2 deltaUV2 = _vertices[2].TextureCoordinate - _vertices[0].TextureCoordinate;
+
+	float f = 1.0f / (deltaUV1.X * deltaUV2.Y - deltaUV2.X * deltaUV1.Y);
+
+	_tangent.X = f * (deltaUV2.Y * edge1.X - deltaUV1.Y * edge2.X);
+	_tangent.Y = f * (deltaUV2.Y * edge1.Y - deltaUV1.Y * edge2.Y);
+	_tangent.Z = f * (deltaUV2.Y * edge1.Z - deltaUV1.Y * edge2.Z);
+
+	_bitangent.X = f * (-deltaUV2.X * edge1.X + deltaUV1.X * edge2.X);
+	_bitangent.Y = f * (-deltaUV2.X * edge1.Y + deltaUV1.X * edge2.Y);
+	_bitangent.Z = f * (-deltaUV2.X * edge1.Z + deltaUV1.X * edge2.Z);
+}
+
 void Mesh::SetShaderVariables(glm::mat4 _pv, const std::list<Mesh*>& _lights)
 {
 	shader->SetMat4("World", world);
 	shader->SetMat4("WVP", _pv * world);
 	shader->SetVec3("CameraPosition", cameraPosition);
 	shader->SetInt("EnableInstancing", enableInstancing);
-	shader->SetVec3("LightColor", lightColor);
+	shader->SetInt("EnableNormalMaps", enableNormalMaps);
 	/*shader->SetVec3("light.position", lightposition);
 	shader->SetVec3("light.direction", glm::normalize(glm::vec3({0,0,0})-lightposition));
 	shader->SetFloat("light.constant", 1.0f);
 	shader->SetFloat("light.linear", 0.007f);
 	shader->SetFloat("light.quadratic", 0.0002f);
 	shader->SetVec3("light.ambientColor", { 0.1f, 0.1f, 0.1f });
-	shader->SetVec3("light.diffuseColor", lightColor);
 	shader->SetVec3("light.specularColor", { 3.0f, 3.0f, 3.0f });
 	shader->SetFloat("light.coneAngle", glm::radians(15.0f));
 	shader->SetFloat("light.falloff", 100);*/
+	shader->SetVec3("LightColor", lightColor);
 	M_ASSERT(_lights.size() <= 4, "Diffuse Shader only supports 4 lights");
-	shader->SetInt("numLights", (int)_lights.size());
+	shader->SetInt("numLights", _lights.size());
+
 	int i = 0;
 	for (auto& light : _lights) {
 		shader->SetInt(Concat("light[", i, "].type").c_str(), light->GetLightType());// DIRECTIONAL_LIGHT = 1, POINT_LIGHT = 2, SPOT_LIGHT = 3, NONE = 0
@@ -356,7 +440,7 @@ void Mesh::SetShaderVariables(glm::mat4 _pv, const std::list<Mesh*>& _lights)
 	shader->SetFloat("material.specularStrength", specularStrength);
 	shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, diffuseTexture->GetTexture());
 	shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, specularTexture->GetTexture());
-
+	shader->SetTextureSampler("material.normalTexture", GL_TEXTURE2, 2, normalTexture->GetTexture());
 }
 
 void Mesh::Render(glm::mat4 _pv, const std::list<Mesh*>& _lights, int _instanceCount)
@@ -368,11 +452,11 @@ void Mesh::Render(glm::mat4 _pv, const std::list<Mesh*>& _lights, int _instanceC
 
 	if (enableInstancing) 
 	{
-		glDrawArraysInstanced(GL_TRIANGLES, 0, vertexData.size() / 8, _instanceCount);
+		glDrawArraysInstanced(GL_TRIANGLES, 0, vertexData.size() / vertexStride, _instanceCount);
 	}
 	else
 	{
-		glDrawArrays(GL_TRIANGLES, 0, vertexData.size() / 8);
+		glDrawArrays(GL_TRIANGLES, 0, vertexData.size() / vertexStride);
 	}
 	glDisableVertexAttribArray(shader->GetAttrVertices());
 	glDisableVertexAttribArray(shader->GetAttrNormals());

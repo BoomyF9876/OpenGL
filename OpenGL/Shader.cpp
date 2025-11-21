@@ -17,6 +17,8 @@ void Shader::LoadAttributes()
 	attrTexCoords = glGetAttribLocation(programID, "texCoords");
 	attrNormals = glGetAttribLocation(programID, "normals");
 	attrInstanceMatrix = glGetAttribLocation(programID, "instanceMatrix");
+	attrTangents = glGetAttribLocation(programID, "tangents");
+	attrBitangents = glGetAttribLocation(programID, "bitangents");
 }
 
 void Shader::SetVec3(const char* _name, glm::vec3 _value)

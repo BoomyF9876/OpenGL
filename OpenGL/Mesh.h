@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "StandardIncludes.h"
 #include "GameController.h"
+#include "OBJ_Loader.h"
 
 enum LightType {
     DIRECTIONAL_LIGHT = 1,
@@ -40,6 +41,7 @@ public:
 	glm::vec3 GetAmbientColor() { return ambientColor; }
 	glm::vec3 GetSpecularColor() { return specularColor; }
 	float GetSpecularStrength() { return specularStrength; }    
+	float GetRotationRate() { return rotationRate; }
 
 	float GetPointLightConstant() { return pointLightconstant; }
 	float GetPointLightLinear() { return pointLightlinear; }
@@ -56,6 +58,8 @@ private:
     void SetShaderVariables(glm::mat4 _pv, const std::list<Mesh*>& _lights);
     void BindAttributes();
     std::string Concat(const std::string& _s1, int _index, const std::string& _s2);
+	std::string RemoveFolder(std::string& _map);
+	void CalculateTangents(std::vector<objl::Vertex> _vertices, objl::Vector3& _tangent, objl::Vector3& _bitangent);
 
 	void LoadVec3(json::JSON& jsonData, const char* name, glm::vec3& vec);
 
@@ -66,6 +70,8 @@ private:
     Texture* diffuseTexture = nullptr;
 	std::string specularMap;
     Texture* specularTexture = nullptr;
+	std::string normalMap;
+	Texture* normalTexture = nullptr;
 
     GLuint vertexBuffer = 0;
     GLuint indexBuffer = 0;
@@ -74,6 +80,9 @@ private:
     std::vector<GLfloat> vertexData;
     std::vector<GLubyte> indexData;
 
+    int vertexStride = 8;
+	bool enableNormalMaps = false;
+    float rotationRate = 0.0f;
 	int instanceCount = 0;
 	bool enableInstancing = false;
 	glm::mat4* instanceData;

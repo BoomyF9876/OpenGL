@@ -239,13 +239,9 @@ void GameController::RunGame()
 
         for (auto& mesh : meshes)
         {
-            float rotationSpeed = 1.0f;
-            mesh->SetRotation(mesh->GetRotation() + glm::vec3(0.0f, rotationSpeed * Time::Instance().DeltaTime(), 0.0f));
+            mesh->SetRotation(mesh->GetRotation() + glm::vec3(0.0f, mesh->GetRotationRate() * Time::Instance().DeltaTime(), 0.0f));
             mesh->Render(camera->GetProjection() * camera->GetView(), lights, currentInstanceCount);
 		}   
-
-        std::string instanceText = "Instances: " + std::to_string(currentInstanceCount);
-        textController->RenderText(instanceText, 20, 750, 0.5f, { 1.0f, 1.0f, 1.0f });
 
         std::string fpsText = "FPS: " + std::to_string(Time::Instance().FPS());
         textController->RenderText(fpsText, 20, 100, 0.5f, {1.0f, 1.0f, 0.0f});

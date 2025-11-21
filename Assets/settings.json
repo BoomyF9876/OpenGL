@@ -1,6 +1,10 @@
 {
   "DefaultFile": "../Assets/Scenes/Scene.json",
-  "ClearColor" : { "r" : 0.1, "g" : 0.1, "b" : 0.1 },
+  "ClearColor": {
+    "r": 0.1,
+    "g": 0.1,
+    "b": 0.1
+  },
   "Camera": {
     "Position": {
       "x": 5.0,
